@@ -137,6 +137,68 @@ already present.
 **Non-audit note:** the crate's own audit trail was performed by an AI CLI tool, not an
 independent security firm — the repo's top-level README still says "not audited."
 
+## Follow-up investigation (2026-08-25): ZK-flavor risk and real circuit cost
+
+### Non-ZK flavor: confirmed real, not hypothetical
+
+Two first-party sources confirm the concern is genuine:
+- `rs-soroban-ultrahonk`'s own `VERIFIER_PROVENANCE.md`: scope is explicitly "Non-ZK,
+  non-recursive, native BN254 UltraHonk path only"; `UltraZKFlavor (hiding polynomial,
+  Libra)` is listed "Not implemented."
+- **OpenZeppelin's own contributor guide** (`packages/tokens/src/confidential/circuits/CLAUDE.md`,
+  VK-generation section) instructs: *"Do not pass `--zk`; the verifier implements only the
+  non-zk `ultra_flavor`. **This recipe is provisional until the verifier is finished.**"*
+  OZ's own team documents this as a known, temporary compromise — not a resolved design
+  decision on their end either.
+
+Cryptographically: hiding polynomials/Libra masking exist to stop an adversary
+interpolating a witness-dependent polynomial from the evaluation points revealed during
+Sumcheck/Gemini opening (reveal ≥ degree+1 points of an unmasked polynomial and it's
+recoverable — standard PLONK-family concern). This is *more* relevant for our circuit
+than a general-purpose one, not less — our witness is tiny (`sk`, `v_s`, `r_s`), so
+there's less natural noise protecting it.
+
+**Conclusion:** for now, hiding the income amount rests entirely on the Pedersen
+commitment's own (real, unconditional) hiding property — not on the proof system's ZK
+property, which this verifier stack doesn't provide yet. Must disclose this precisely in
+the README ("commitment-hiding + soundness, not proof-transcript zero-knowledge, pending
+an audited ZK-flavor verifier") rather than claim unqualified "zero-knowledge."
+
+### Real circuit cost: toolchain broken, partial data obtained
+
+`bb 0.87.0` (the version `rs-soroban-ultrahonk` pins) is **no longer downloadable** —
+Aztec has moved to a `v5.x` release scheme with different asset naming; confirmed 404 on
+the exact pinned release and plausible tag variants. No exact bb-generated proof could be
+measured today.
+
+Did get real data on the circuit itself: installed `nargo 1.0.0-beta.9`, built the actual
+D-balance-predicate circuit (D1/D2 viewing-key check, DB3 Pedersen opening, DB4
+threshold, D5 range — reusing OZ's real `commit`/`vk_from_sk`/`pvk_from_vk` lib
+functions, no ECDH/ciphertext gadgets needed). **Compiles cleanly at 71 ACIR opcodes** —
+for scale, OZ's own documented baselines (same CLAUDE.md) are Register 33, Withdraw 94,
+Transfer 133 opcodes. Ours sits between Register and Withdraw — a genuinely small circuit.
+
+UltraHonk verification cost is dominated by fixed per-proof overhead (transcript,
+~log₂(N) sumcheck rounds, pairing check), not linear opcode count — small circuits round
+up to similar power-of-2 buckets. The only real cost anchor available
+(`contracts/identity/README.md`): **~81M CPU instructions** to verify a *much smaller*
+circuit (single Poseidon2 call) against Soroban's ~100M/tx budget. Best-effort estimate
+(not measured, clearly not final): our circuit likely costs in the same high-tens-to-90M+
+range — i.e. most or all of the per-tx budget by itself, with real risk of not fitting
+alongside Transfer-proof verification in the same transaction, and non-trivial risk of
+exceeding the ceiling outright. **Must be re-measured with a working bb before finalizing
+architecture.**
+
+### Net effect on scope
+
+Both findings push toward narrowing Path A rather than abandoning it: keep genuine ZK
+(Noir circuit + real on-chain UltraHonk verification) for the one circuit ProofPay
+actually controls — the BalanceThreshold predicate — and treat it as its own standalone
+transaction rather than assuming it can ride alongside Transfer-proof verification. The
+question of whether income arrival itself (via `confidential_transfer`, which needs the
+heavier Transfer circuit verified too) is in scope for the MVP, or deferred, is the next
+real decision — see below.
+
 ## Decision (confirmed by user 2026-08-25): Path A — Full ZK path
 
 Wire a real UltraHonk verification backend (Nethermind's `rs-soroban-ultrahonk`) for
