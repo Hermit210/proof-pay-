@@ -7,7 +7,7 @@ import { ProveThreshold } from "./features/prove-threshold/ProveThreshold";
 import type { AppEnv } from "./services/env";
 
 export default function App({ env }: { env: AppEnv }) {
-  const { status, address, error, connect } = useWallet(env);
+  const { status, address, error, freighterAvailable, connect } = useWallet(env);
   const [registered, setRegistered] = useState(false);
 
   return (
@@ -15,7 +15,13 @@ export default function App({ env }: { env: AppEnv }) {
       <header className="app-header">
         <h1>ProofPay</h1>
         <p className="tagline">Prove your income clears a threshold -- without revealing the amount.</p>
-        <WalletConnect status={status} address={address} error={error} onConnect={connect} />
+        <WalletConnect
+          status={status}
+          address={address}
+          error={error}
+          freighterAvailable={freighterAvailable}
+          onConnect={connect}
+        />
       </header>
 
       {address && (

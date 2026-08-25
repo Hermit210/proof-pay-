@@ -28,16 +28,27 @@ export class WrongNetworkError extends Error {
   }
 }
 
-export function isFreighterInstalled(): boolean {
-  return typeof window !== "undefined" && window.freighter === true;
+// NOT `window.freighter === true` read synchronously: the extension injects
+// that flag asynchronously (content-script timing, can genuinely lag behind
+// React's first render), so a bare sync check can read "not installed" for a
+// real, unlocked install. `isConnected()` is the library's own detection --
+// it checks `window.freighter` as a fast path but falls back to a
+// postMessage handshake with the content script (2s timeout) when the flag
+// isn't set yet. Confirmed by reading the actual (minified, no non-minified
+// source is published) implementation in
+// node_modules/@stellar/freighter-api/build/index.min.js -- do not
+// reintroduce a synchronous `window.freighter` read here.
+export async function checkFreighterAvailable(): Promise<boolean> {
+  const result = await isConnected();
+  return !result.error && result.isConnected === true;
 }
 
 export async function connectWallet(): Promise<string> {
-  if (!isFreighterInstalled()) {
-    throw new FreighterNotInstalledError();
-  }
   const connected = await isConnected();
   if (connected.error) throw new Error(connected.error.message);
+  if (!connected.isConnected) {
+    throw new FreighterNotInstalledError();
+  }
 
   await setAllowed();
   const access = await requestAccess();
@@ -46,7 +57,7 @@ export async function connectWallet(): Promise<string> {
 }
 
 export async function getConnectedAddress(): Promise<string | null> {
-  if (!isFreighterInstalled()) return null;
+  if (!(await checkFreighterAvailable())) return null;
   const result = await getAddress();
   if (result.error || !result.address) return null;
   return result.address;
