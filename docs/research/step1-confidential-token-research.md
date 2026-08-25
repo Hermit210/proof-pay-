@@ -75,6 +75,23 @@ income must arrive via `confidential_transfer` (hidden amount), not `deposit` (a
 public on-chain) — so the base `Transfer` circuit's proof also needs to be genuinely
 verifiable, not just our new one.
 
+## Dependency mechanism: git, not crates.io
+
+`stellar-tokens`'s latest published crates.io release is 0.7.2 (2026-06-09) and its
+source contains only `fungible`, `non_fungible`, `rwa`, `vault` — **no `confidential`
+module**. The confidential module only exists on the `main` branch of
+`github.com/OpenZeppelin/stellar-contracts` (HEAD at commit `fbfde388e1b72afa93d6b1c922067879b20e81db`,
+dated 2026-08-14, after the 0.7.2 release). ProofPay's `Cargo.toml` therefore depends on
+it via a git dependency pinned to that commit:
+
+```toml
+stellar-tokens = { git = "https://github.com/OpenZeppelin/stellar-contracts", rev = "fbfde388e1b72afa93d6b1c922067879b20e81db" }
+```
+
+This is still "depending on the crate," not copy-pasted source — just pinned to a commit
+rather than a semver release, since no release has this module yet. Worth disclosing in
+the README alongside the unaudited-preview warning: this is pre-release, unversioned code.
+
 ## Decision (confirmed by user 2026-08-25): Path A — Full ZK path
 
 Wire a real UltraHonk verification backend (Nethermind's `rs-soroban-ultrahonk`) for
