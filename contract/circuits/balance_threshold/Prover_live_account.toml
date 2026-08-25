@@ -1,0 +1,16 @@
+# Real proof against the real live on-chain state of ProofPay's testnet test
+# account (see docs/deployment/testnet.md): sk=42 was proven in the real
+# register() tx; v_s=500/r_s=0 is the real deposit+merge opening, verified to
+# match the on-chain spendable_commitment exactly (see compute_witness.nr's
+# print_witness_values_live_account test). threshold=300, so this proves
+# "500 >= 300" without revealing 500, against the account's genuine on-chain
+# commitment -- not a synthetic fixture.
+sk = "0x2a"
+v_s = "500"
+r_s = "0"
+pvk_x = "0x0f68443b77048425f38117c950725d0a18ea957e6d0f80a0a12be7eb2b93e52a"
+pvk_y = "0x0485a8420e07a52d84b735aa2513def3dc476a6271b7c41974f04b136e022e52"
+c_spend_x = "0x02f517b1014c715bbee94bf483b09f54676989386b8d65fa2521ec1c0b16efd1"
+c_spend_y = "0x1122054956e9dfef280167914c26e0e6b5b8343ba3950cea4090a12e2916122c"
+addr_f = "0x1f90be7d3b2b34c936c5bd20fa0848d436925b86904d14de1baa85c6a4cfc29a"
+threshold = "300"
