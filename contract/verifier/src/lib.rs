@@ -32,6 +32,9 @@ use stellar_tokens::confidential::verifier::{
 };
 use ultrahonk_soroban_verifier::UltraHonkVerifier;
 
+#[cfg(test)]
+mod test;
+
 const MANAGER_ROLE: Symbol = symbol_short!("manager");
 
 #[contract]
