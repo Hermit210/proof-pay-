@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "token",
     "verifier",
+    "threshold_verifier",
 ]
 
 [workspace.package]
