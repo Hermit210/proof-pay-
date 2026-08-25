@@ -199,6 +199,22 @@ question of whether income arrival itself (via `confidential_transfer`, which ne
 heavier Transfer circuit verified too) is in scope for the MVP, or deferred, is the next
 real decision — see below.
 
+## MVP scope decision (confirmed by user 2026-08-25): threshold-only privacy for v1
+
+Income arrives via `deposit` (SEP-41 amount visible on-chain at deposit time, like any
+normal payment — this is standard, proof-less Confidential Token behavior). Individual
+incoming payments are **not** hidden in v1. What's genuinely zero-knowledge is the
+threshold check itself: the freelancer's current spendable balance and whether it clears
+the threshold. This means only two circuits need a real, working on-chain verifier —
+**Register** (33 opcodes, per OZ's own documented baseline) and our new
+**BalanceThreshold** (71 opcodes, already built and compiling) — not the much heavier
+**Transfer** circuit (133 opcodes, 8 EC scalar multiplications). This substantially
+de-risks the CPU-budget question versus wiring up the full transfer-privacy flow, and
+still delivers the core "prove income ≥ X without revealing the amount" promise honestly,
+since the pass/fail proof is real ZK even though the deposit events that built up the
+balance were individually public. Full transfer-level privacy (hiding individual
+payments too) is a documented future direction, not part of the v1 honesty claim.
+
 ## Decision (confirmed by user 2026-08-25): Path A — Full ZK path
 
 Wire a real UltraHonk verification backend (Nethermind's `rs-soroban-ultrahonk`) for
