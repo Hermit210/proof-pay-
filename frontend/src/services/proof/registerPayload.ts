@@ -15,6 +15,7 @@
 // this wrong produces a payload that silently fails to decode on-chain.
 
 import { xdr } from "@stellar/stellar-sdk";
+import { Buffer } from "buffer";
 
 function hexToBytes32(hex: string): Uint8Array {
   const clean = hex.replace(/^0x/, "").padStart(64, "0");
@@ -45,11 +46,11 @@ export function buildRegisterData(params: {
   const payload = xdr.ScVal.scvMap([
     new xdr.ScMapEntry({
       key: xdr.ScVal.scvSymbol("pvk"),
-      val: xdr.ScVal.scvBytes(pvkPoint),
+      val: xdr.ScVal.scvBytes(Buffer.from(pvkPoint)),
     }),
     new xdr.ScMapEntry({
       key: xdr.ScVal.scvSymbol("y"),
-      val: xdr.ScVal.scvBytes(yPoint),
+      val: xdr.ScVal.scvBytes(Buffer.from(yPoint)),
     }),
   ]);
 
@@ -60,9 +61,9 @@ export function buildRegisterData(params: {
     }),
     new xdr.ScMapEntry({
       key: xdr.ScVal.scvSymbol("proof"),
-      val: xdr.ScVal.scvBytes(params.proof),
+      val: xdr.ScVal.scvBytes(Buffer.from(params.proof)),
     }),
   ]);
 
-  return registerData.toXdr();
+  return registerData.toXDR();
 }
