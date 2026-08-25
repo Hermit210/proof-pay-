@@ -25,6 +25,9 @@ use stellar_tokens::confidential::{
     storage as token_storage, ConfidentialAccount, ConfidentialToken, NoHooks, SpenderDelegation,
 };
 
+#[cfg(test)]
+mod test;
+
 #[contract]
 pub struct ProofPayToken;
 
