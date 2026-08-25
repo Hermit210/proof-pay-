@@ -1,0 +1,12 @@
+# Sample/dev witness only -- sk=1, v_s=500 (spendable balance), r_s=7 (blinding),
+# threshold=300 -- passes (500 >= 300). Replace with real values when proving for
+# an actual account; never commit a real account's sk/v_s/r_s here.
+sk = "1"
+v_s = "500"
+r_s = "7"
+pvk_x = "0x18a4b8518ca096d20b81198feff2b75c339b48aad82f14bd369a30345e55e1b8"
+pvk_y = "0x1f28300c2770564cc4365e79447103c3c54a8a66cda024ed3ab0e195669b3a7a"
+c_spend_x = "0x19015ab28e8f8c0c8cfc206f120ad9aa8647a61c625d3aca3f3407a8ad13aebb"
+c_spend_y = "0x16c7602e0b4503364b96bd5ae1471c922abe0e3e711d8ed724662480e99af3f2"
+addr_f = "1"
+threshold = "300"

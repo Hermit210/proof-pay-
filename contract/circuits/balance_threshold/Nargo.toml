@@ -1,0 +1,8 @@
+[package]
+name = "proofpay_balance_threshold"
+type = "bin"
+authors = ["ProofPay"]
+compiler_version = "=1.0.0"
+
+[dependencies]
+stellar_confidential_lib = { path = "../vendor/stellar_confidential_lib" }
