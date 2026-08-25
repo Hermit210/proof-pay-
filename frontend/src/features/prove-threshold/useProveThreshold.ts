@@ -85,7 +85,17 @@ export function useProveThreshold(env: AppEnv, address: string | null) {
           public_inputs: Buffer.from(publicInputs),
           proof: Buffer.from(proof),
         });
-        const sent = await verifyTx.signAndSend();
+        // `proofpay-threshold-verifier.verify_proof` has no `require_auth()`
+        // in the contract (see contract/threshold_verifier/src/lib.rs --
+        // anyone can call it, that's deliberate), so the SDK's simulation
+        // finds zero required auth entries and classifies this as a
+        // read-only call by default (`AssembledTransaction.isReadCall`,
+        // node_modules/@stellar/stellar-sdk/lib/esm/contract/assembled_transaction.js).
+        // We want a real submitted transaction anyway, since the tx hash is
+        // what ShareResult gives a third party to independently verify --
+        // `force: true` is the SDK's own documented mechanism for that,
+        // confirmed by reading its source rather than guessed.
+        const sent = await verifyTx.signAndSend({ force: true });
         const passed = verifyTx.result.isOk() && verifyTx.result.unwrap();
 
         setState({
