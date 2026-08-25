@@ -215,6 +215,50 @@ since the pass/fail proof is real ZK even though the deposit events that built u
 balance were individually public. Full transfer-level privacy (hiding individual
 payments too) is a documented future direction, not part of the v1 honesty claim.
 
+## Real cost measurement (2026-08-25): GO confirmed
+
+Fixed the `bb` toolchain break: `bbup -v 0.87.0`'s tag-normalization no longer matches
+Aztec's actual tagging (`aztec-packages-v{version}` vs. the real `v0.87.0`). Downloaded
+`barretenberg-amd64-linux.tar.gz` directly from the `v0.87.0` GitHub release — works.
+
+Generated a **real proof** (not simulated) for the actual BalanceThreshold circuit: real
+witness (sk=1, v_s=500, r_s=7, threshold=300 → passes) run through OZ's actual
+`vk_from_sk`/`pvk_from_vk`/`commit` functions, executed with `nargo`, proved with
+`bb prove -s ultra_honk --oracle_hash keccak` per OZ's own documented recipe. Result: a
+genuine 14,592-byte proof (exactly matches `ultrahonk_soroban_verifier`'s `PROOF_BYTES`
+constant — confirms UltraHonk proof size is fixed regardless of circuit size) and a
+1,760-byte VK.
+
+Fed both into `rs-soroban-ultrahonk`'s own `UltraHonkVerifierContract` inside a
+`soroban-sdk` test using `env.cost_estimate().budget()`:
+
+| Operation | CPU instructions |
+|:---|:---|
+| Deploy (store VK) | 82,508 |
+| `verify_proof` | **57,350,741** |
+
+**57.35M vs. the ~100M/tx budget — fits comfortably, ~43% headroom.** Meaningfully better
+than the carried-over ~81M estimate from an unrelated demo circuit. Cost breakdown shows
+why: dominated by fixed per-proof overhead independent of circuit size (`Bn254G1Msm`
+18.1M, `Bn254Pairing` 11.4M, `Bn254FrFromU256` 9.1M, `Bn254G2CheckPointInSubgroup` 3.4M)
+— meaning **Register verification (33 opcodes) costs approximately the same ~57M**, not
+less. Register + BalanceThreshold together would total ~114M and **cannot share one
+transaction** — confirms the standalone-transaction design decided earlier is required,
+not just a precaution.
+
+### Final verdict: GO on Path A
+
+Both proof-carrying operations ProofPay's v1 scope needs — Register and BalanceThreshold
+— are real, working, and individually fit Soroban's budget with room to spare, provided
+each runs as its own transaction (never combined with each other or anything else
+proof-heavy). The one caveat carried forward, not resolved: privacy rests on
+Pedersen-commitment hiding, not proof-transcript ZK, until an audited ZK-flavor verifier
+ships — disclosed precisely in the README, not glossed over.
+
+The validated circuit source (from `~/scratch/proofpay_threshold_probe`) and its
+confirmed-working proof/VK artifacts are the starting point for Step 2's real contract
+circuit, copied into this repo rather than rebuilt from scratch.
+
 ## Decision (confirmed by user 2026-08-25): Path A — Full ZK path
 
 Wire a real UltraHonk verification backend (Nethermind's `rs-soroban-ultrahonk`) for
