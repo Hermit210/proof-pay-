@@ -1,0 +1,15 @@
+[package]
+name = "register_payload"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "register_payload"
+path = "src/main.rs"
+
+[dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+stellar-tokens = { workspace = true }
+hex = "0.4"

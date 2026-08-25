@@ -6,6 +6,7 @@ members = [
     "threshold_verifier",
     "auditor",
     "tools/address_to_field",
+    "tools/register_payload",
 ]
 
 [workspace.package]
