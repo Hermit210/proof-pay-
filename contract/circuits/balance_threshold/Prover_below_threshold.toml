@@ -1,0 +1,12 @@
+# Dev fixture for the failure-case test: v_s=200 < threshold=300, DB4 must
+# fail. pvk/c_spend recomputed for these witness values (sk=1, addr_f=1,
+# v_s=200, r_s=7) via the same compute_witness.nr test helper.
+sk = "1"
+v_s = "200"
+r_s = "7"
+pvk_x = "0x18a4b8518ca096d20b81198feff2b75c339b48aad82f14bd369a30345e55e1b8"
+pvk_y = "0x1f28300c2770564cc4365e79447103c3c54a8a66cda024ed3ab0e195669b3a7a"
+c_spend_x = "0x0ba8f588affe5d80c203b8dbd5e8067a6ae080f10af49d4f8cf0ba43f1e0ec76"
+c_spend_y = "0x122082f6a5a73d5f3430636ee2697f3f1821c95c92fd1a383ae685ae4e440ccc"
+addr_f = "1"
+threshold = "300"
