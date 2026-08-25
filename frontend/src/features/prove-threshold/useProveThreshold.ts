@@ -1,0 +1,116 @@
+import { useCallback, useState } from "react";
+import { Buffer } from "buffer";
+import { makeTokenClient, makeThresholdVerifierClient } from "../../services/contracts/clients";
+import { addressToFieldHex } from "../../services/crypto/addressToField";
+import { generateProof, CIRCUITS } from "../../services/proof/noirProver";
+import { loadWalletState } from "../../services/localWalletState";
+import { track, reportError } from "../../services/analytics";
+import type { AppEnv } from "../../services/env";
+
+export type ProveStage =
+  | "idle"
+  | "reading_balance"
+  | "generating_proof"
+  | "verifying"
+  | "passed"
+  | "failed_below_threshold"
+  | "error";
+
+export interface ProveResult {
+  stage: ProveStage;
+  error: string | null;
+  txHash: string | null;
+  threshold: string | null;
+}
+
+function fieldHexToBigEndianHex(hex: string): string {
+  return hex.replace(/^0x/, "").padStart(64, "0");
+}
+
+export function useProveThreshold(env: AppEnv, address: string | null) {
+  const [state, setState] = useState<ProveResult>({
+    stage: "idle",
+    error: null,
+    txHash: null,
+    threshold: null,
+  });
+
+  const prove = useCallback(
+    async (thresholdInput: string) => {
+      if (!address) return;
+      const threshold = BigInt(thresholdInput);
+      const walletState = loadWalletState(address);
+      if (!walletState || !walletState.registered) {
+        setState((s) => ({ ...s, stage: "error", error: "Register and deposit first." }));
+        return;
+      }
+
+      setState({ stage: "reading_balance", error: null, txHash: null, threshold: thresholdInput });
+      try {
+        const tokenClient = makeTokenClient(env, address);
+        const balanceTx = await tokenClient.confidential_balance({ account: address });
+        const account = balanceTx.result;
+        const spend = account.spendable_commitment as Buffer;
+        const pvk = account.viewing_public_key as Buffer;
+
+        const cSpendX = "0x" + spend.subarray(0, 32).toString("hex");
+        const cSpendY = "0x" + spend.subarray(32, 64).toString("hex");
+        const pvkX = "0x" + pvk.subarray(0, 32).toString("hex");
+        const pvkY = "0x" + pvk.subarray(32, 64).toString("hex");
+        const addrF = "0x" + (await addressToFieldHex(env.tokenContractId));
+
+        setState((s) => ({ ...s, stage: "generating_proof" }));
+        const { proof, publicInputs } = await generateProof(CIRCUITS.balanceThreshold, {
+          sk: walletState.spendingKey,
+          v_s: "0x" + BigInt(walletState.spendableValue).toString(16),
+          r_s: "0x" + BigInt(walletState.spendableBlinding).toString(16),
+          pvk_x: pvkX,
+          pvk_y: pvkY,
+          c_spend_x: cSpendX,
+          c_spend_y: cSpendY,
+          addr_f: addrF,
+          threshold: "0x" + threshold.toString(16),
+        });
+        track("proof_generated", { threshold: thresholdInput });
+
+        setState((s) => ({ ...s, stage: "verifying" }));
+        const verifierClient = makeThresholdVerifierClient(env, address);
+        const verifyTx = await verifierClient.verify_proof({
+          public_inputs: Buffer.from(publicInputs),
+          proof: Buffer.from(proof),
+        });
+        const sent = await verifyTx.signAndSend();
+        const passed = verifyTx.result.isOk() && verifyTx.result.unwrap();
+
+        setState({
+          stage: passed ? "passed" : "failed_below_threshold",
+          error: null,
+          txHash: sent.sendTransactionResponse?.hash ?? null,
+          threshold: thresholdInput,
+        });
+        track(passed ? "proof_verified" : "proof_verification_failed", { threshold: thresholdInput });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Proof generation or verification failed.";
+        // A Noir constraint failure during witness execution (not a proof
+        // rejected by the verifier) means the statement itself is false --
+        // your balance genuinely doesn't clear the threshold. That's a
+        // correct, expected outcome, not a bug: you cannot even generate a
+        // proof for a false statement, let alone have it verify.
+        const isConstraintFailure = /cannot satisfy constraint|assert/i.test(message);
+        if (isConstraintFailure) {
+          setState((s) => ({ ...s, stage: "failed_below_threshold", error: null }));
+          track("proof_verification_failed", { threshold: thresholdInput, reason: "constraint" });
+        } else {
+          setState((s) => ({ ...s, stage: "error", error: message }));
+          track("proof_generation_failed", { message });
+          reportError(err, { stage: "prove_threshold" });
+        }
+      }
+    },
+    [env, address],
+  );
+
+  return { ...state, prove };
+}
+
+export { fieldHexToBigEndianHex };
