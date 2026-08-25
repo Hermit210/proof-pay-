@@ -92,6 +92,51 @@ This is still "depending on the crate," not copy-pasted source — just pinned t
 rather than a semver release, since no release has this module yet. Worth disclosing in
 the README alongside the unaudited-preview warning: this is pre-release, unversioned code.
 
+## rs-soroban-ultrahonk integration findings (2026-08-25)
+
+Cloned `github.com/NethermindEth/rs-soroban-ultrahonk` to `~/scratch/rs-soroban-ultrahonk`
+and read the real source. Confirmed API shape and three concrete risks.
+
+**API (real, working, on-chain example exists at `contracts/rs-soroban-ultrahonk/src/lib.rs`):**
+```rust
+use ultrahonk_soroban_verifier::UltraHonkVerifier;
+let verifier = UltraHonkVerifier::new(&env, &vk_bytes)?;      // constructor: lib.rs:47-57
+verifier.verify(&env, &proof_bytes, &public_inputs)?;         // verify_proof: lib.rs:68-89, Result<(), VerifyError>
+```
+Not on crates.io — git dependency, package name `ultrahonk_soroban_verifier`
+(`crates/ultrahonk-soroban-verifier`).
+
+**Risk 1 — SDK version mismatch, right now.** This crate pins `soroban-sdk = "26.0.1"`;
+OpenZeppelin's confidential module needs `27.0.2`. An open **draft, unmerged** PR #40
+fixes this but flags an unresolved upstream resolver bug
+(`stellar/rs-soroban-env#1705`) where a fresh SDK-27 lockfile can pull an incompatible
+`ed25519-dalek`. We'll need to fork/patch to SDK 27 ourselves rather than wait on it.
+
+**Risk 2 — CPU budget is tight.** The repo's own measured numbers
+(`contracts/identity/README.md`): "~24KB WASM... ~81M CPU instructions on Soroban
+Protocol 26" for verifying a *bare* Poseidon2-preimage demo circuit — before adding any
+of ConfidentialToken's own logic to the same invocation. Soroban's per-tx CPU budget has
+historically sat near 100M instructions. **Must measure our actual BalanceThreshold
+circuit's real cost before committing further** — this could make on-chain verification
+of anything beyond the simplest circuit infeasible within a single transaction.
+
+**Risk 3 — potentially serious: verifier only implements the non-ZK UltraHonk flavor.**
+`crates/ultrahonk-soroban-verifier/VERIFIER_PROVENANCE.md` states plainly:
+*"UltraZKFlavor (hiding polynomial, Libra) — Not implemented."* Only supports
+"UltraFlavor" (Keccak transcript, no ZK-blinding). This needs to be resolved BEFORE
+writing threshold-circuit code: does verifying a proof through this non-ZK-flavor
+verifier risk leaking witness information (the actual income amount) through the proof
+transcript itself, independent of the Pedersen-commitment/ECDH hiding already in the
+protocol? If yes, this could undermine ProofPay's core privacy claim regardless of how
+correct the rest of the integration is.
+
+**Toolchain gaps confirmed on this machine:** `nargo`/`bb` not installed (need
+`noirup -v 1.0.0-beta.9`, `bbup -v 0.87.0`); `wasm32v1-none` and `stellar` CLI 27.1.0
+already present.
+
+**Non-audit note:** the crate's own audit trail was performed by an AI CLI tool, not an
+independent security firm — the repo's top-level README still says "not audited."
+
 ## Decision (confirmed by user 2026-08-25): Path A — Full ZK path
 
 Wire a real UltraHonk verification backend (Nethermind's `rs-soroban-ultrahonk`) for
