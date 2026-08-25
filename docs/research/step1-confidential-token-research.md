@@ -259,6 +259,48 @@ The validated circuit source (from `~/scratch/proofpay_threshold_probe`) and its
 confirmed-working proof/VK artifacts are the starting point for Step 2's real contract
 circuit, copied into this repo rather than rebuilt from scratch.
 
+## Real cost measurement obtained (2026-08-25) — GO on Path A
+
+The `bb 0.87.0` download breaks because `bbup`'s tag-normalization logic
+(`aztec-packages-v{version}`) no longer matches Aztec's actual tagging — the real tag is
+just `v0.87.0`, and it still exists with all assets intact:
+`https://github.com/AztecProtocol/aztec-packages/releases/download/v0.87.0/barretenberg-amd64-linux.tar.gz`.
+Downloaded directly, confirmed `bb --version` → `0.87.0`. (Also needed a rootless `jq`
+binary — `bb`'s CRS-fetch step shells out to it and this box has no passwordless sudo.)
+
+Generated a **real** proof for the actual 71-opcode BalanceThreshold circuit: computed
+witness values via a `nargo test` harness calling OZ's real `vk_from_sk`/`pvk_from_vk`/
+`commit` functions (sk=1, v_s=500, r_s=7, threshold=300 → passes), executed the witness,
+ran `bb prove -s ultra_honk --oracle_hash keccak` / `bb write_vk` per OZ's own documented
+recipe. Result: a genuine 14,592-byte proof (exactly matches
+`ultrahonk_soroban_verifier::PROOF_BYTES` — confirms UltraHonk proof size is fixed
+regardless of circuit size) and a 1,760-byte VK.
+
+Fed both into `rs-soroban-ultrahonk`'s own existing `UltraHonkVerifierContract` (no new
+contract needed) inside a `soroban-sdk` test using `env.cost_estimate().budget()`:
+
+| Operation | CPU instructions | Memory |
+|:---|:---|:---|
+| Deploy (store VK) | 82,508 | 26,277 bytes |
+| `verify_proof` | **57,350,741** | 2,344,481 bytes |
+
+**57.35M vs. the ~100M/tx budget — fits comfortably, ~43% headroom.** Meaningfully better
+than the ~81M estimate carried over from the unrelated demo circuit. Cost is dominated by
+fixed per-proof overhead independent of circuit size (`Bn254G1Msm` 18.1M, `Bn254Pairing`
+11.4M, `Bn254FrFromU256` 9.1M, `Bn254G2CheckPointInSubgroup` 3.4M) — meaning **Register
+verification (33 opcodes) would cost approximately the same ~57M**, not less. Register +
+BalanceThreshold together would total ~114M and **cannot share one transaction** —
+confirms the standalone-transaction design decided earlier is required, not just prudent.
+
+**Final verdict: GO on Path A.** Both proof-carrying operations ProofPay's MVP needs
+(Register, BalanceThreshold) are real, working, and individually fit Soroban's CPU budget
+with room to spare, provided each stays its own transaction. Combined with the earlier
+findings, Step 2 can now proceed with a validated architecture rather than an assumed one.
+
+Probe artifacts (circuit source, real proof/vk/public_inputs, worked witness values) live
+in `~/scratch/proofpay_threshold_probe` — not yet copied into this repo; Step 2 will
+promote the validated circuit into `contract/` proper rather than reusing the scratch copy.
+
 ## Decision (confirmed by user 2026-08-25): Path A — Full ZK path
 
 Wire a real UltraHonk verification backend (Nethermind's `rs-soroban-ultrahonk`) for
