@@ -1,1 +1,24 @@
-target/nnode_modules/ndist/n.envn*.logn
+# Rust / Soroban build output (regenerable via `cargo build` / `stellar contract build`)
+**/target/
+
+# Noir circuit build artifacts are inside **/target/ above and therefore ignored by
+# default -- EXCEPT the compiled ACIR JSON per circuit, which is deliberately committed
+# (ProofPay's frontend loads it directly for in-browser proof generation, and it's the
+# artifact this repo's own tests/deployment record were generated against). Already-
+# tracked files stay tracked regardless of a later-added ignore pattern, so no `!`
+# override is needed here -- this comment is the explanation for why `git status` will
+# still show that one file normally.
+
+# soroban-sdk test snapshots (regenerated every `cargo test` run; not meaningful to diff)
+**/test_snapshots/
+
+# Node / frontend (once it exists)
+node_modules/
+dist/
+.env
+*.log
+
+# Editor / OS noise
+.DS_Store
+.vscode/
+.idea/
