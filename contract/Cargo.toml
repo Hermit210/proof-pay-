@@ -4,6 +4,7 @@ members = [
     "token",
     "verifier",
     "threshold_verifier",
+    "auditor",
 ]
 
 [workspace.package]
