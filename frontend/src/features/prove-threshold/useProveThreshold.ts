@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Buffer } from "buffer";
 import { makeTokenClient, makeThresholdVerifierClient } from "../../services/contracts/clients";
+import { decodeConfidentialAccount } from "../../services/contracts/decodeAccount";
 import { addressToFieldHex } from "../../services/crypto/addressToField";
 import { generateProof, CIRCUITS } from "../../services/proof/noirProver";
 import { loadWalletState } from "../../services/localWalletState";
@@ -49,9 +50,14 @@ export function useProveThreshold(env: AppEnv, address: string | null) {
       try {
         const tokenClient = makeTokenClient(env, address);
         const balanceTx = await tokenClient.confidential_balance({ account: address });
-        const account = balanceTx.result;
-        const spend = account.spendable_commitment as Buffer;
-        const pvk = account.viewing_public_key as Buffer;
+        // Deliberately NOT `balanceTx.result`: the SDK's generic struct
+        // decoder throws `no such entry: Point` for this contract's
+        // `ConfidentialAccount` (a real spec-generation gap -- see
+        // decodeAccount.ts). Read the raw ScVal map directly instead.
+        if (!balanceTx.simulationData.result) throw new Error("No simulation result");
+        const account = decodeConfidentialAccount(balanceTx.simulationData.result.retval);
+        const spend = account.spendableCommitment;
+        const pvk = account.viewingPublicKey;
 
         const cSpendX = "0x" + spend.subarray(0, 32).toString("hex");
         const cSpendY = "0x" + spend.subarray(32, 64).toString("hex");

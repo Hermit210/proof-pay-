@@ -9,6 +9,7 @@ const STAGE_LABEL: Record<RegisterStage, string> = {
   deriving_keys: "Deriving your keys locally...",
   generating_proof: "Generating proof locally -- this takes a few seconds and never leaves your browser...",
   submitting: "Submitting to the network...",
+  confirming: "Confirming on-chain -- this is a real independent check, not just waiting for submission to ack...",
   done: "Registered!",
   error: "",
 };
