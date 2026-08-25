@@ -39,21 +39,39 @@ Real measured on-chain cost for the `verify_proof` call above (via
 **57,350,741 CPU instructions**, comfortably within Soroban's ~100M/tx budget. See
 `docs/research/step1-confidential-token-research.md` for the full measurement.
 
-## What's deferred, and why
+## The full chain, connected and real
 
-A full `register()` → `deposit()` → `merge()` → threshold-proof flow through the live
-`proofpay-token` contract needs a genuine Register-circuit proof, which requires
-correctly computing `addr_f` (the deployed token contract's address, compressed to a
-BN254 field element) and `acct_f` (the registering account's address, same encoding) via
-Stellar's `address_to_field` derivation — SEP-23 strkey to little-endian 28-byte lo/hi
-limbs, per `circuits/CLAUDE.md`'s own documented trap about this being the one primitive
-with two independent implementations. Getting this exactly right against the *live
-deployed* contract's address (not a test fixture) needs care that didn't fit in this
-pass without real risk of a subtly wrong derivation. The threshold-verifier proof above
-already demonstrates the genuinely hard part (real UltraHonk verification on-chain,
-working correctly) end-to-end; a full register+deposit flow is a natural, well-scoped
-follow-up, not a blocker to any Level 4 requirement -- "smart contracts deployed on
-Stellar testnet" and "real end-to-end test" are both satisfied by what's above.
+The gap noted above (a full `register()` → `deposit()` → `merge()` → threshold-proof
+flow through the *live* `proofpay-token` contract) is now closed. `address_to_field`
+(SEP-23 strkey, ASCII bytes not decoded payload, little-endian 28-byte lo/hi limbs,
+Poseidon2-domain-tagged — see `docs/research/step3b-address-to-field.md` for the full
+derivation, verified against OpenZeppelin's own test vectors before being trusted here)
+produced the real `addr_f`/`acct_f` values fed into a genuine Register-circuit proof,
+generated for a fresh testnet account (`GBEJY33A5YK22SOU5YACPFXM45UEJ5G27VIDNNLEPUXTKIQBKY4WJEZS`)
+via the same pinned toolchain used throughout (`nargo 1.0.0-beta.9`, `bb 0.87.0`). The
+resulting circuit's VK was confirmed byte-for-byte identical to OpenZeppelin's own
+`register.vk.json` (already registered on-chain) before trusting it.
+
+| Step | Tx hash | Stellar Expert | Result |
+|:---|:---|:---|:---|
+| Register `auditor_id=0` on `proofpay-auditor` (canonical Grumpkin generator `G`, structural — not cryptographically load-bearing for v1) | `2047bf3b28d04dc2c2360214de9b02f59b089199dafe1079a49348e4f6950f22` | [view](https://stellar.expert/explorer/testnet/tx/2047bf3b28d04dc2c2360214de9b02f59b089199dafe1079a49348e4f6950f22) | `AuditorRegistered` |
+| **`register()`** with a real Register-circuit proof | `1aea5f32156d38bf6dc7d27c1b3a96d95a4360c8d1eb5136501c759dc092a528` | [view](https://stellar.expert/explorer/testnet/tx/1aea5f32156d38bf6dc7d27c1b3a96d95a4360c8d1eb5136501c759dc092a528) | `Register` event; on-chain `spending_public_key`/`viewing_public_key` confirmed to match the proven values exactly |
+| `deposit(500)` | `bdd9e3910f810a546e23471bbd96b56c61be19a81c753e0f03ef2d26eb2d2beb` | [view](https://stellar.expert/explorer/testnet/tx/bdd9e3910f810a546e23471bbd96b56c61be19a81c753e0f03ef2d26eb2d2beb) | `Deposit` event, `receiving_commitment` becomes `500·G` |
+| `merge()` | `faf362bee44012a9e53389a0804e695ecdae7165cfa605c135296d416ff4dfc7` | [view](https://stellar.expert/explorer/testnet/tx/faf362bee44012a9e53389a0804e695ecdae7165cfa605c135296d416ff4dfc7) | `Merge` event; `spendable_commitment` becomes `500·G`, `receiving_commitment` resets to identity |
+| **`proofpay-threshold-verifier.verify_proof`**, a real proof that this account's *actual on-chain* spendable balance is ≥ 300 | `0e02c9617c97e6f8b3450a4a085977de2d4d5a410b61abccd24e590f0d2848c8` | [view](https://stellar.expert/explorer/testnet/tx/0e02c9617c97e6f8b3450a4a085977de2d4d5a410b61abccd24e590f0d2848c8) | `true` |
+
+The last row is the complete, connected product flow, not an isolated demonstration: the
+proof's public inputs (`c_spend_x`, `c_spend_y`) were computed as `commit(v_s=500,
+r_s=0)` and checked to match the account's real on-chain `spendable_commitment` — read
+back via `confidential_balance` after the real `deposit`+`merge` above — byte-for-byte
+before the proof was ever generated. This also confirms, against real chain state rather
+than assumption, that a deposit's zero-blinding opening survives `merge()` unchanged and
+that the vendored `commit` gadget matches the on-chain Pedersen scheme exactly.
+
+`register()`'s XDR payload was built by `contract/tools/register_payload`, which reuses
+the real `stellar_tokens::confidential::{RegisterPayload, RegisterData}` types rather
+than hand-rolling the wire format — see that tool's doc comment for the exact `Point =
+BytesN<64>` layout.
 
 ## Reproducing the deployment
 
