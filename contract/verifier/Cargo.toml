@@ -1,0 +1,33 @@
+[package]
+name = "proofpay-verifier"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+crate-type = ["cdylib", "lib"]
+doctest = false
+
+[dependencies]
+# "alloc" is required, not optional: ultrahonk_soroban_verifier uses `alloc`
+# types internally and needs a global allocator, which this feature provides.
+# Without it, the wasm build fails with "no global memory allocator found"
+# (confirmed by reproducing that exact error, then finding this fix in
+# rs-soroban-ultrahonk's own contracts/rs-soroban-ultrahonk/Cargo.toml).
+soroban-sdk = { workspace = true, features = ["alloc"] }
+stellar-tokens = { workspace = true }
+stellar-access = { workspace = true }
+stellar-macros = { workspace = true }
+# Depends on NethermindEth/rs-soroban-ultrahonk#40 ("build: upgrade Soroban
+# dependencies to 27"), not the upstream main branch, because upstream still
+# pins soroban-sdk 26.0.1 which cannot coexist with OpenZeppelin's confidential
+# module (needs 27.0.2) in the same dependency graph. PR #40 is open/draft as
+# of 2026-08-25 but its own validation notes report cargo check/clippy passing
+# and 18/18 downstream fixture tests passing against SDK 27.0.0; pinning to its
+# head commit on the author's fork rather than waiting for merge. See
+# docs/research/step1-confidential-token-research.md for the full trail.
+ultrahonk_soroban_verifier = { git = "https://github.com/kalepail/rs-soroban-ultrahonk", rev = "fa1a26ca3fbdd736681208ddc84ed880ede20c81" }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
