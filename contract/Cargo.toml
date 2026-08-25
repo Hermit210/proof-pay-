@@ -1,0 +1,27 @@
+[workspace]
+resolver = "2"
+members = [
+    "token",
+    "verifier",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+soroban-sdk = { version = "27.0.2", features = ["experimental_spec_shaking_v2"] }
+stellar-tokens = { git = "https://github.com/OpenZeppelin/stellar-contracts", rev = "fbfde388e1b72afa93d6b1c922067879b20e81db" }
+stellar-access = { git = "https://github.com/OpenZeppelin/stellar-contracts", rev = "fbfde388e1b72afa93d6b1c922067879b20e81db" }
+stellar-macros = { git = "https://github.com/OpenZeppelin/stellar-contracts", rev = "fbfde388e1b72afa93d6b1c922067879b20e81db" }
+
+[profile.release]
+opt-level = "z"
+overflow-checks = true
+debug = 0
+strip = "symbols"
+debug-assertions = false
+panic = "abort"
+codegen-units = 1
+lto = true
