@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import type { AppEnv } from "../services/env";
+import { SecurityOnIllustration } from "../assets/illustrations";
 
 // Real, already-verified testnet transaction -- not a placeholder number.
 // This is the "fully connected chain" proof from docs/deployment/testnet.md:
@@ -133,6 +134,9 @@ export default function Home({ env: _env }: { env: AppEnv }) {
             <Link to="/dashboard" className="btn">
               Try it on testnet
             </Link>
+          </motion.div>
+          <motion.div className="hero-visual" variants={fadeUp} transition={{ duration: 0.6 }}>
+            <SecurityOnIllustration />
           </motion.div>
         </motion.div>
       </section>

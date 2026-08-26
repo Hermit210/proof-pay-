@@ -522,6 +522,25 @@ code {
   margin: 0 auto 2rem;
 }
 
+.hero-visual {
+  color: var(--accent-bright);
+  max-width: 620px;
+  margin: 3rem auto 0;
+}
+
+.hero-visual svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 760px) {
+  .hero-visual {
+    max-width: 420px;
+    margin-top: 2rem;
+  }
+}
+
 
 .section {
   padding: 3.5rem 0;
