@@ -21,20 +21,20 @@ export function Navbar() {
           <span className="navbar-logo-mark">◆</span> ProofPay
         </NavLink>
 
-        <div className="navbar-links">
-          {LINKS.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.end}
-              className={({ isActive }) => (isActive ? "active" : undefined)}
-            >
-              {link.label}
-            </NavLink>
-          ))}
-        </div>
-
         <div className="navbar-right">
+          <div className="navbar-links">
+            {LINKS.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.end}
+                className={({ isActive }) => (isActive ? "active" : undefined)}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </div>
+
           <button
             className="navbar-hamburger"
             aria-label="Toggle menu"
