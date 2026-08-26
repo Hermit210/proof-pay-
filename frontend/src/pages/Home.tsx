@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import type { AppEnv } from "../services/env";
 import { SecurityOnIllustration } from "../assets/illustrations";
+import { Marquee } from "../components/Marquee";
 
 // Real, already-verified testnet transaction -- not a placeholder number.
 // This is the "fully connected chain" proof from docs/deployment/testnet.md:
@@ -22,53 +23,70 @@ const staggerContainer = {
   },
 };
 
-function IconEye() {
+function IconEye({ size = 26 }: { size?: number }) {
   return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
-function IconHome() {
+function IconHome({ size = 26 }: { size?: number }) {
   return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path d="M3 11 12 4l9 7" />
       <path d="M5 10v10h14V10" />
     </svg>
   );
 }
-function IconBriefcase() {
+function IconBriefcase({ size = 26 }: { size?: number }) {
   return (
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <rect x="3" y="7" width="18" height="12" rx="2" />
       <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
     </svg>
   );
 }
-function IconCoin() {
+function IconCoin({ size = 30 }: { size?: number }) {
   return (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <circle cx="12" cy="12" r="9" />
       <path d="M12 7v10M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1.1 3 2.5-1.3 2-3 2.5-3 1.1-3 2.5 1.3 2.5 3 2.5 3-1.1 3-2.5" />
     </svg>
   );
 }
-function IconShieldCheck() {
+function IconShieldCheck({ size = 30 }: { size?: number }) {
   return (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z" />
       <path d="m9 12 2 2 4-4" />
     </svg>
   );
 }
-function IconShare() {
+function IconShare({ size = 30 }: { size?: number }) {
   return (
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
       <circle cx="18" cy="5" r="2.5" />
       <circle cx="6" cy="12" r="2.5" />
       <circle cx="18" cy="19" r="2.5" />
       <path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4" />
+    </svg>
+  );
+}
+function IconLock({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="4" y="10" width="16" height="10" rx="2" />
+      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+    </svg>
+  );
+}
+function IconChain({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="2" y="9" width="8" height="8" rx="3" />
+      <rect x="14" y="7" width="8" height="8" rx="3" />
+      <path d="M9 12h6" />
     </svg>
   );
 }
@@ -109,6 +127,15 @@ const STEPS = [
   },
 ];
 
+const CAPABILITIES = [
+  { icon: <IconHome size={20} />, label: "Prove rent eligibility" },
+  { icon: <IconEye size={20} />, label: "Prove loan eligibility" },
+  { icon: <IconBriefcase size={20} />, label: "Prove gig income" },
+  { icon: <IconShieldCheck size={20} />, label: "Threshold proofs" },
+  { icon: <IconLock size={20} />, label: "In-browser proving" },
+  { icon: <IconChain size={20} />, label: "On-chain verified" },
+];
+
 export default function Home({ env: _env }: { env: AppEnv }) {
   return (
     <div>
@@ -139,6 +166,10 @@ export default function Home({ env: _env }: { env: AppEnv }) {
             <SecurityOnIllustration />
           </motion.div>
         </motion.div>
+      </section>
+
+      <section className="marquee-section">
+        <Marquee items={CAPABILITIES} ariaLabel="ProofPay capabilities" />
       </section>
 
       <section className="section">
