@@ -140,31 +140,39 @@ export default function Home({ env: _env }: { env: AppEnv }) {
   return (
     <div>
       <section className="hero">
-        <div className="hero-glow" aria-hidden="true" />
+        <div className="hero-aurora" aria-hidden="true" />
         <motion.div
           className="hero-content page"
           initial="hidden"
           animate="show"
           variants={staggerContainer}
         >
+          <motion.span className="hero-badge" variants={fadeUp} transition={{ duration: 0.4 }}>
+            <span className="hero-badge-dot" aria-hidden="true" />
+            Live on testnet
+          </motion.span>
           <motion.h1 variants={fadeUp} transition={{ duration: 0.5 }}>
             Prove your income clears a bar.
             <br />
             <span className="hero-accent">Not what it actually is.</span>
           </motion.h1>
           <motion.p className="hero-subtitle" variants={fadeUp} transition={{ duration: 0.5 }}>
-            ProofPay lets you prove your on-chain balance is at or above a threshold you choose
-            -- to a landlord, a lender, or a platform -- using a real zero-knowledge proof
-            generated entirely in your browser, verified on Stellar testnet.
+            A real zero-knowledge proof, generated in your browser, verified on Stellar.
           </motion.p>
-          <motion.div variants={fadeUp} transition={{ duration: 0.5 }}>
-            <Link to="/dashboard" className="btn">
-              Try it on testnet
-            </Link>
-          </motion.div>
           <motion.div className="hero-visual" variants={fadeUp} transition={{ duration: 0.6 }}>
             <SecurityOnIllustration />
           </motion.div>
+          <motion.div className="cta-row" variants={fadeUp} transition={{ duration: 0.5 }}>
+            <Link to="/dashboard" className="btn">
+              Try it on testnet
+            </Link>
+            <a href="#how-it-works" className="btn btn-outline">
+              See how it works
+            </a>
+          </motion.div>
+          <motion.p className="hero-trust" variants={fadeUp} transition={{ duration: 0.5 }}>
+            Testnet only &middot; unaudited preview &middot; no real funds
+          </motion.p>
         </motion.div>
       </section>
 
@@ -198,7 +206,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
         </div>
       </section>
 
-      <section className="section section-invert">
+      <section className="section section-invert" id="how-it-works">
         <div className="page">
           <h2>How it works</h2>
           <p className="section-lead">
