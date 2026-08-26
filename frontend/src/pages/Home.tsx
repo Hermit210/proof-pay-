@@ -163,7 +163,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
         </div>
       </section>
 
-      <section className="section section-alt">
+      <section className="section section-invert">
         <div className="page">
           <h2>How it works</h2>
           <p className="section-lead">
@@ -237,7 +237,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section-invert">
         <div className="page cta-row">
           <Link to="/dashboard" className="btn">
             Try ProofPay on testnet

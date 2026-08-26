@@ -1,19 +1,38 @@
 :root {
-  --bg: #ffffff;
-  --bg-elevated: #f4faf6;
-  --surface: #f7fbf8;
-  --border: #d7e6dc;
-  --text: #0f2419;
-  --text-dim: #52705f;
-  --accent: #157347;
-  --accent-bright: #1a9c5e;
-  --accent-dim: #0f5c38;
-  --accent-wash: rgba(21, 115, 71, 0.08);
-  --success: #157347;
-  --error: #c0392b;
-  --info: #a15c07;
+  --black: #0a0a0a;
+  --white: #ffffff;
+  --bg: var(--white);
+  --bg-elevated: #f7f7f8;
+  --surface: var(--white);
+  --border: #e4e4e7;
+  --text: var(--black);
+  --text-dim: #52525b;
+  --accent: #15803d;
+  --accent-bright: #22c55e;
+  --accent-dim: #166534;
+  --accent-wash: rgba(34, 197, 94, 0.1);
+  --success: var(--accent);
+  --error: #dc2626;
+  --info: #b45309;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   color-scheme: light;
+}
+
+/* Bold-contrast section: flips the palette to black bg / white text / bright
+   green accent by shadowing the shared tokens, so existing components
+   (.card, .step, .btn-outline, etc.) re-theme automatically inside it. */
+.section-invert {
+  --bg: var(--black);
+  --bg-elevated: #171717;
+  --surface: #171717;
+  --border: #2e2e2e;
+  --text: var(--white);
+  --text-dim: #a1a1aa;
+  --accent: var(--accent-bright);
+  --accent-dim: var(--accent-bright);
+  --accent-wash: rgba(34, 197, 94, 0.16);
+  background: var(--bg);
+  color: var(--text);
 }
 
 * {
@@ -184,20 +203,21 @@ code {
 }
 
 .btn {
-  background: var(--accent);
-  color: #ffffff;
-  font-weight: 600;
+  background: var(--accent-bright);
+  color: var(--black);
+  font-weight: 700;
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.1rem;
   font-size: 0.95rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .btn:hover:not(:disabled) {
-  background: var(--accent-bright);
+  background: var(--black);
+  color: var(--white);
 }
 
 .btn:active:not(:disabled) {
@@ -211,12 +231,19 @@ code {
 
 .btn-outline {
   background: transparent;
-  color: var(--accent);
-  border: 1px solid var(--accent-dim);
+  color: var(--text);
+  border: 2px solid var(--text);
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: var(--accent-wash);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.btn-outline:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .btn-ghost {
@@ -460,13 +487,15 @@ code {
   padding: 5rem 0 4rem;
   text-align: center;
   overflow: hidden;
+  background: var(--black);
+  color: var(--white);
 }
 
 .hero-glow {
   position: absolute;
   inset: -20% -10% auto -10%;
   height: 480px;
-  background: radial-gradient(ellipse at center, var(--accent-wash), transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(34, 197, 94, 0.22), transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -483,15 +512,16 @@ code {
 }
 
 .hero-accent {
-  color: var(--accent);
+  color: var(--accent-bright);
 }
 
 .hero-subtitle {
-  color: var(--text-dim);
+  color: #a1a1aa;
   font-size: 1.15rem;
   max-width: 620px;
   margin: 0 auto 2rem;
 }
+
 
 .section {
   padding: 3.5rem 0;
