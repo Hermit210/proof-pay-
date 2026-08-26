@@ -1,44 +1,23 @@
-import { useState } from "react";
-import { WalletConnect } from "./features/wallet-connect/WalletConnect";
-import { useWallet } from "./features/wallet-connect/useWallet";
-import { Register } from "./features/register/Register";
-import { Deposit } from "./features/deposit/Deposit";
-import { ProveThreshold } from "./features/prove-threshold/ProveThreshold";
+import { Routes, Route } from "react-router-dom";
+import { RootLayout } from "./layouts/RootLayout";
+import { WalletProvider } from "./context/WalletContext";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import About from "./pages/About";
+import History from "./pages/History";
 import type { AppEnv } from "./services/env";
 
 export default function App({ env }: { env: AppEnv }) {
-  const { status, address, error, freighterAvailable, connect } = useWallet(env);
-  const [registered, setRegistered] = useState(false);
-
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>ProofPay</h1>
-        <p className="tagline">Prove your income clears a threshold -- without revealing the amount.</p>
-        <WalletConnect
-          status={status}
-          address={address}
-          error={error}
-          freighterAvailable={freighterAvailable}
-          onConnect={connect}
-        />
-      </header>
-
-      {address && (
-        <main className="app-main">
-          <Register env={env} address={address} onRegistered={() => setRegistered(true)} />
-          {registered && (
-            <>
-              <Deposit env={env} address={address} />
-              <ProveThreshold env={env} address={address} />
-            </>
-          )}
-        </main>
-      )}
-
-      {!address && (
-        <p className="empty-state">Connect your wallet to get started.</p>
-      )}
-    </div>
+    <WalletProvider env={env}>
+      <Routes>
+        <Route element={<RootLayout />}>
+          <Route path="/" element={<Home env={env} />} />
+          <Route path="/dashboard" element={<Dashboard env={env} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/history" element={<History />} />
+        </Route>
+      </Routes>
+    </WalletProvider>
   );
 }
