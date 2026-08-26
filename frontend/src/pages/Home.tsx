@@ -21,17 +21,71 @@ const staggerContainer = {
   },
 };
 
+function IconEye() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+function IconHome() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M3 11 12 4l9 7" />
+      <path d="M5 10v10h14V10" />
+    </svg>
+  );
+}
+function IconBriefcase() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="3" y="7" width="18" height="12" rx="2" />
+      <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </svg>
+  );
+}
+function IconCoin() {
+  return (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v10M9 9.5c0-1.4 1.3-2.5 3-2.5s3 1.1 3 2.5-1.3 2-3 2.5-3 1.1-3 2.5 1.3 2.5 3 2.5 3-1.1 3-2.5" />
+    </svg>
+  );
+}
+function IconShieldCheck() {
+  return (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M12 2 4 5v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V5l-8-3Z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+function IconShare() {
+  return (
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="18" cy="5" r="2.5" />
+      <circle cx="6" cy="12" r="2.5" />
+      <circle cx="18" cy="19" r="2.5" />
+      <path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4" />
+    </svg>
+  );
+}
+
 const PROBLEMS = [
   {
     title: "Rent applications",
+    icon: <IconHome />,
     body: "A landlord wants proof you can afford rent -- not a full bank statement showing every purchase you've made this year.",
   },
   {
     title: "Loan eligibility",
+    icon: <IconEye />,
     body: "A lender needs to know your income clears a bar. Handing over your entire transaction history is a bigger ask than the question requires.",
   },
   {
     title: "Gig income verification",
+    icon: <IconBriefcase />,
     body: "Freelance and gig platforms pay on-chain increasingly often -- and on most chains, every payment you've ever received is publicly visible to anyone who looks up your address.",
   },
 ];
@@ -39,14 +93,17 @@ const PROBLEMS = [
 const STEPS = [
   {
     title: "Deposit",
+    icon: <IconCoin />,
     body: "Your income arrives as a normal on-chain deposit. The deposit amount itself is visible -- like any regular payment -- but that's the last time an exact number is shown to anyone.",
   },
   {
     title: "Prove",
+    icon: <IconShieldCheck />,
     body: "Pick a threshold. Your browser generates a real zero-knowledge proof, locally, that your balance clears it -- your spending key and exact balance never leave your device.",
   },
   {
     title: "Share",
+    icon: <IconShare />,
     body: "Hand over the proof result and a real on-chain transaction hash. Anyone can independently verify it on Stellar Expert -- without ever learning your actual balance.",
   },
 ];
@@ -97,6 +154,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
           >
             {PROBLEMS.map((p) => (
               <motion.div key={p.title} className="problem-card" variants={fadeUp} transition={{ duration: 0.4 }}>
+                <div className="problem-card-icon">{p.icon}</div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
               </motion.div>
@@ -105,7 +163,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section-alt">
         <div className="page">
           <h2>How it works</h2>
           <p className="section-lead">
@@ -113,6 +171,30 @@ export default function Home({ env: _env }: { env: AppEnv }) {
             What's private is the threshold check itself -- whether your balance clears the bar
             you chose, proven without revealing what the balance actually is.
           </p>
+
+          <motion.div
+            className="flow-diagram"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.5 }}
+            variants={staggerContainer}
+            aria-hidden="true"
+          >
+            {STEPS.map((step, i) => (
+              <motion.div key={step.title} style={{ display: "contents" }}>
+                <motion.div className="flow-diagram-node" variants={fadeUp} transition={{ duration: 0.4 }}>
+                  <div className="step-icon">{step.icon}</div>
+                  {step.title}
+                </motion.div>
+                {i < STEPS.length - 1 && (
+                  <motion.span className="flow-diagram-arrow" variants={fadeUp} transition={{ duration: 0.4 }}>
+                    &rarr;
+                  </motion.span>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
+
           <motion.div
             className="steps"
             initial="hidden"
