@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { WalletStatus } from "./useWallet";
 import { Alert, Button, Spinner } from "../../components/ui";
 
@@ -7,17 +8,59 @@ export function WalletConnect({
   error,
   freighterAvailable,
   onConnect,
+  onDisconnect,
 }: {
   status: WalletStatus;
   address: string | null;
   error: string | null;
   freighterAvailable: boolean | null;
   onConnect: () => void;
+  onDisconnect?: () => void;
 }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onClickAway = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onClickAway);
+    return () => document.removeEventListener("mousedown", onClickAway);
+  }, [menuOpen]);
+
   if (address) {
     return (
-      <div className="wallet-badge">
-        Connected: <code>{address.slice(0, 6)}...{address.slice(-4)}</code>
+      <div className="wallet-menu" ref={menuRef}>
+        <button
+          className="wallet-badge"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+        >
+          <code>
+            {address.slice(0, 6)}...{address.slice(-4)}
+          </code>{" "}
+          ▾
+        </button>
+        {menuOpen && onDisconnect && (
+          <div className="wallet-menu-dropdown" role="menu">
+            <p className="wallet-menu-hint">
+              To use a different wallet: disconnect, switch the active account inside Freighter,
+              then connect again.
+            </p>
+            <button
+              className="danger"
+              role="menuitem"
+              onClick={() => {
+                setMenuOpen(false);
+                onDisconnect();
+              }}
+            >
+              Disconnect
+            </button>
+          </div>
+        )}
       </div>
     );
   }

@@ -33,6 +33,7 @@ export function initAnalytics(env: AppEnv): void {
 export type ProductEvent =
   | "wallet_connected"
   | "wallet_connect_failed"
+  | "wallet_disconnected"
   | "register_started"
   | "register_succeeded"
   | "register_failed"

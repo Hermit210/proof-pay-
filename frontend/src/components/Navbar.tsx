@@ -5,13 +5,13 @@ import { useWalletContext } from "../context/WalletContext";
 
 const LINKS = [
   { to: "/", label: "Home", end: true },
-  { to: "/about", label: "About" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/history", label: "History" },
+  { to: "/about", label: "About" },
 ];
 
 export function Navbar() {
-  const { status, address, error, freighterAvailable, connect } = useWalletContext();
+  const { status, address, error, freighterAvailable, connect, disconnect } = useWalletContext();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -50,6 +50,7 @@ export function Navbar() {
               error={error}
               freighterAvailable={freighterAvailable}
               onConnect={connect}
+              onDisconnect={disconnect}
             />
           </div>
         </div>
@@ -75,6 +76,7 @@ export function Navbar() {
               error={error}
               freighterAvailable={freighterAvailable}
               onConnect={connect}
+              onDisconnect={disconnect}
             />
           </div>
         </div>

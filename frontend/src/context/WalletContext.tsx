@@ -8,6 +8,7 @@ export interface WalletContextValue {
   error: string | null;
   freighterAvailable: boolean | null;
   connect: () => void;
+  disconnect: () => void;
 }
 
 const WalletContext = createContext<WalletContextValue | null>(null);
