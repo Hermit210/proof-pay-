@@ -587,6 +587,62 @@ code {
 }
 
 
+/* ---------- Feature strip (dividers, not cards) ---------- */
+
+.feature-strip-section {
+  padding: 3rem 0 2.5rem;
+}
+
+.feature-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.feature-strip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.5rem 1.75rem;
+  border-left: 1px solid var(--border);
+  max-width: 220px;
+}
+
+.feature-strip-item:first-child {
+  border-left: none;
+}
+
+.feature-strip-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.feature-strip-item h3 {
+  margin: 0 0 0.3rem;
+  font-size: 0.95rem;
+}
+
+.feature-strip-item p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .feature-strip-item {
+    border-left: none;
+    border-top: 1px solid var(--border);
+    max-width: none;
+    width: 100%;
+    padding: 1rem 0.5rem;
+  }
+  .feature-strip-item:first-child {
+    border-top: none;
+  }
+}
+
 /* ---------- Marquee (infinite scrolling capability ticker) ---------- */
 
 .marquee-section {

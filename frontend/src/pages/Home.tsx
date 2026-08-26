@@ -90,6 +90,14 @@ function IconChain({ size = 22 }: { size?: number }) {
     </svg>
   );
 }
+function IconFlask({ size = 22 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M9 2v6.5L3.6 18.4A2 2 0 0 0 5.3 21h13.4a2 2 0 0 0 1.7-2.6L15 8.5V2" />
+      <path d="M9 2h6M6.5 15h11" />
+    </svg>
+  );
+}
 
 const PROBLEMS = [
   {
@@ -124,6 +132,29 @@ const STEPS = [
     title: "Share",
     icon: <IconShare />,
     body: "Hand over the proof result and a real on-chain transaction hash. Anyone can independently verify it on Stellar Expert -- without ever learning your actual balance.",
+  },
+];
+
+const FEATURES = [
+  {
+    icon: <IconLock size={24} />,
+    title: "In-browser proving",
+    body: "Your keys and exact balance never leave your device.",
+  },
+  {
+    icon: <IconShieldCheck size={24} />,
+    title: "Threshold-only",
+    body: "Prove you clear a bar, not what you're actually worth.",
+  },
+  {
+    icon: <IconChain size={24} />,
+    title: "On-chain verified",
+    body: "Every result checks out independently on Stellar Expert.",
+  },
+  {
+    icon: <IconFlask size={24} />,
+    title: "Testnet ready",
+    body: "Live and interactive right now -- no waitlist.",
   },
 ];
 
@@ -173,6 +204,26 @@ export default function Home({ env: _env }: { env: AppEnv }) {
           <motion.p className="hero-trust" variants={fadeUp} transition={{ duration: 0.5 }}>
             Testnet only &middot; unaudited preview &middot; no real funds
           </motion.p>
+        </motion.div>
+      </section>
+
+      <section className="feature-strip-section">
+        <motion.div
+          className="page feature-strip"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={staggerContainer}
+        >
+          {FEATURES.map((f) => (
+            <motion.div key={f.title} className="feature-strip-item" variants={fadeUp} transition={{ duration: 0.4 }}>
+              <div className="feature-strip-icon">{f.icon}</div>
+              <div>
+                <h3>{f.title}</h3>
+                <p>{f.body}</p>
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
       </section>
 
