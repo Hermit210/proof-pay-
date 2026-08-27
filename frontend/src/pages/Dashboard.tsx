@@ -21,8 +21,8 @@ export default function Dashboard({ env }: { env: AppEnv }) {
   const stepsDone = [Boolean(address), registered, registered].filter(Boolean).length;
 
   return (
-    <div className="dashboard">
-      <header className="dashboard-header">
+    <div>
+      <header className="page-hero dashboard-header section-invert">
         <h1>ProofPay</h1>
         <p className="tagline">Prove your income clears a threshold -- without revealing the amount.</p>
         {!address && (
@@ -37,37 +37,39 @@ export default function Dashboard({ env }: { env: AppEnv }) {
         )}
       </header>
 
-      {address && (
-        <div className="dashboard-progress" aria-hidden="true">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className={`dashboard-progress-dot ${i < stepsDone ? "done" : ""}`} />
-          ))}
-        </div>
-      )}
-
-      <AnimatePresence mode="popLayout">
+      <div className="dashboard">
         {address && (
-          <motion.main className="dashboard-main" key="main" {...cardMotion}>
-            <motion.div {...cardMotion}>
-              <Register env={env} address={address} onRegistered={() => setRegistered(true)} />
-            </motion.div>
-            <AnimatePresence>
-              {registered && (
-                <>
-                  <motion.div key="deposit" {...cardMotion}>
-                    <Deposit env={env} address={address} />
-                  </motion.div>
-                  <motion.div key="prove" {...cardMotion} transition={{ ...cardMotion.transition, delay: 0.1 }}>
-                    <ProveThreshold env={env} address={address} />
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-          </motion.main>
+          <div className="dashboard-progress" aria-hidden="true">
+            {[0, 1, 2].map((i) => (
+              <span key={i} className={`dashboard-progress-dot ${i < stepsDone ? "done" : ""}`} />
+            ))}
+          </div>
         )}
-      </AnimatePresence>
 
-      {!address && <p className="empty-state">Connect your wallet to get started.</p>}
+        <AnimatePresence mode="popLayout">
+          {address && (
+            <motion.main className="dashboard-main" key="main" {...cardMotion}>
+              <motion.div {...cardMotion}>
+                <Register env={env} address={address} onRegistered={() => setRegistered(true)} />
+              </motion.div>
+              <AnimatePresence>
+                {registered && (
+                  <>
+                    <motion.div key="deposit" {...cardMotion}>
+                      <Deposit env={env} address={address} />
+                    </motion.div>
+                    <motion.div key="prove" {...cardMotion} transition={{ ...cardMotion.transition, delay: 0.1 }}>
+                      <ProveThreshold env={env} address={address} />
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </motion.main>
+          )}
+        </AnimatePresence>
+
+        {!address && <p className="empty-state">Connect your wallet to get started.</p>}
+      </div>
     </div>
   );
 }
