@@ -6,6 +6,7 @@ import { addressToFieldHex } from "../../services/crypto/addressToField";
 import { generateProof, CIRCUITS } from "../../services/proof/noirProver";
 import { loadWalletState } from "../../services/localWalletState";
 import { appendHistory } from "../../services/history";
+import { parsePositiveBigInt } from "../../services/parseAmount";
 import { track, reportError } from "../../services/analytics";
 import type { AppEnv } from "../../services/env";
 
@@ -40,7 +41,11 @@ export function useProveThreshold(env: AppEnv, address: string | null) {
   const prove = useCallback(
     async (thresholdInput: string) => {
       if (!address) return;
-      const threshold = BigInt(thresholdInput);
+      const threshold = parsePositiveBigInt(thresholdInput);
+      if (threshold === null) {
+        setState((s) => ({ ...s, stage: "error", error: "Enter a whole number greater than zero." }));
+        return;
+      }
       const walletState = loadWalletState(address);
       if (!walletState || !walletState.registered) {
         setState((s) => ({ ...s, stage: "error", error: "Register and deposit first." }));

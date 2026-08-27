@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { makeTokenClient } from "../../services/contracts/clients";
 import { recordDeposit } from "../../services/localWalletState";
 import { appendHistory } from "../../services/history";
+import { parsePositiveBigInt } from "../../services/parseAmount";
 import { track, reportError } from "../../services/analytics";
 import type { AppEnv } from "../../services/env";
 
@@ -15,9 +16,9 @@ export function useDeposit(env: AppEnv, address: string | null) {
     async (amount: string) => {
       if (!address) return;
       setError(null);
-      const amountNum = BigInt(amount);
-      if (amountNum <= 0n) {
-        setError("Enter an amount greater than zero.");
+      const amountNum = parsePositiveBigInt(amount);
+      if (amountNum === null) {
+        setError("Enter a whole number greater than zero.");
         return;
       }
       try {
