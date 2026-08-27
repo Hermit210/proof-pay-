@@ -176,7 +176,7 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section section-alt">
+      <section className="section section-invert">
         <div className="page">
           <h2>Real-world use cases</h2>
           <p className="section-lead">
