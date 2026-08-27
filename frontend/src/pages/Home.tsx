@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import type { AppEnv } from "../services/env";
 import { Marquee } from "../components/Marquee";
+import { fadeUp, staggerContainer, fadeUpTransition } from "../lib/motionPresets";
 
 // Real, already-verified testnet transaction -- not a placeholder number.
 // This is the "fully connected chain" proof from docs/deployment/testnet.md:
@@ -9,18 +10,6 @@ import { Marquee } from "../components/Marquee";
 // revealing the actual balance (500), verified on-chain returning `true`.
 const REAL_PROOF_TX = "0e02c9617c97e6f8b3450a4a085977de2d4d5a410b61abccd24e590f0d2848c8";
 const REAL_PROOF_EXPLORER_URL = `https://stellar.expert/explorer/testnet/tx/${REAL_PROOF_TX}`;
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0 },
-};
-
-const staggerContainer = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.12 },
-  },
-};
 
 function IconEye({ size = 26 }: { size?: number }) {
   return (
@@ -177,19 +166,19 @@ export default function Home({ env: _env }: { env: AppEnv }) {
           animate="show"
           variants={staggerContainer}
         >
-          <motion.span className="hero-badge" variants={fadeUp} transition={{ duration: 0.4 }}>
+          <motion.span className="hero-badge" variants={fadeUp} transition={fadeUpTransition}>
             <span className="hero-badge-dot" aria-hidden="true" />
             Live on testnet
           </motion.span>
-          <motion.h1 variants={fadeUp} transition={{ duration: 0.5 }}>
+          <motion.h1 variants={fadeUp} transition={fadeUpTransition}>
             Prove your income clears a bar.
             <br />
             <span className="hero-accent">Not what it actually is.</span>
           </motion.h1>
-          <motion.p className="hero-subtitle" variants={fadeUp} transition={{ duration: 0.5 }}>
+          <motion.p className="hero-subtitle" variants={fadeUp} transition={fadeUpTransition}>
             A real zero-knowledge proof, generated in your browser, verified on Stellar.
           </motion.p>
-          <motion.div className="cta-row" variants={fadeUp} transition={{ duration: 0.5 }}>
+          <motion.div className="cta-row" variants={fadeUp} transition={fadeUpTransition}>
             <Link to="/dashboard" className="btn">
               Try it on testnet
             </Link>
@@ -197,7 +186,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
               See how it works
             </a>
           </motion.div>
-          <motion.p className="hero-trust" variants={fadeUp} transition={{ duration: 0.5 }}>
+          <motion.p className="hero-trust" variants={fadeUp} transition={fadeUpTransition}>
             Testnet only &middot; unaudited preview &middot; no real funds
           </motion.p>
         </motion.div>
@@ -212,7 +201,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
           variants={staggerContainer}
         >
           {FEATURES.map((f) => (
-            <motion.div key={f.title} className="feature-strip-item" variants={fadeUp} transition={{ duration: 0.4 }}>
+            <motion.div key={f.title} className="feature-strip-item" variants={fadeUp} transition={fadeUpTransition}>
               <div className="feature-strip-icon">{f.icon}</div>
               <div>
                 <h3>{f.title}</h3>
@@ -243,7 +232,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
             variants={staggerContainer}
           >
             {PROBLEMS.map((p) => (
-              <motion.div key={p.title} className="problem-card" variants={fadeUp} transition={{ duration: 0.4 }}>
+              <motion.div key={p.title} className="problem-card" variants={fadeUp} transition={fadeUpTransition}>
                 <div className="problem-card-icon">{p.icon}</div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
@@ -272,12 +261,12 @@ export default function Home({ env: _env }: { env: AppEnv }) {
           >
             {STEPS.map((step, i) => (
               <motion.div key={step.title} style={{ display: "contents" }}>
-                <motion.div className="flow-diagram-node" variants={fadeUp} transition={{ duration: 0.4 }}>
+                <motion.div className="flow-diagram-node" variants={fadeUp} transition={fadeUpTransition}>
                   <div className="step-icon">{step.icon}</div>
                   {step.title}
                 </motion.div>
                 {i < STEPS.length - 1 && (
-                  <motion.span className="flow-diagram-arrow" variants={fadeUp} transition={{ duration: 0.4 }}>
+                  <motion.span className="flow-diagram-arrow" variants={fadeUp} transition={fadeUpTransition}>
                     &rarr;
                   </motion.span>
                 )}
@@ -293,7 +282,7 @@ export default function Home({ env: _env }: { env: AppEnv }) {
             variants={staggerContainer}
           >
             {STEPS.map((step, i) => (
-              <motion.div key={step.title} className="step" variants={fadeUp} transition={{ duration: 0.4 }}>
+              <motion.div key={step.title} className="step" variants={fadeUp} transition={fadeUpTransition}>
                 <div className="step-number">{i + 1}</div>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
@@ -308,10 +297,27 @@ export default function Home({ env: _env }: { env: AppEnv }) {
           <h2>Already verified on testnet</h2>
           <motion.div
             className="proof-point"
-            initial={{ opacity: 0, scale: 0.94 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.94, boxShadow: "0 0 0 0 rgba(201, 162, 75, 0)" }}
+            whileInView={{
+              // Arrays match boxShadow's 3 keyframes 1:1 so the shared
+              // `times` below applies cleanly to every animated property.
+              opacity: [0, 1, 1],
+              scale: [0.94, 1, 1],
+              // A one-time gold glow that settles, not a looping shimmer --
+              // this is the single most important trust-building moment on
+              // the site, so it gets the one deliberate motion flourish, not
+              // a busy/looping effect. rgba() literal here (not var(--gold-
+              // accent) via color-mix) because Motion's box-shadow keyframe
+              // interpolation needs a plain color to animate smoothly; the
+              // value mirrors --gold-accent (#c9a24b) exactly.
+              boxShadow: [
+                "0 0 0 0 rgba(201, 162, 75, 0)",
+                "0 0 40px 8px rgba(201, 162, 75, 0.35)",
+                "0 0 18px 2px rgba(201, 162, 75, 0.18)",
+              ],
+            }}
             viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.5 }}
+            transition={{ ...fadeUpTransition, duration: 1.1, times: [0, 0.55, 1] }}
           >
             <p className="proof-point-label">Real on-chain result</p>
             <p className="proof-point-value">balance &ge; 300 &rarr; true</p>

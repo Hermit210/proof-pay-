@@ -1,11 +1,6 @@
 import { motion } from "motion/react";
 import { PrivateDataIllustration } from "../assets/illustrations";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 },
-};
-const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
+import { fadeUp, staggerContainer as stagger, fadeUpTransition } from "../lib/motionPresets";
 
 function IconShield() {
   return (
@@ -60,14 +55,14 @@ export default function About() {
   return (
     <div>
       <section className="about-hero page section-invert">
-        <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+        <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={fadeUpTransition}>
           Why Stellar, and how the privacy actually works
         </motion.h1>
         <motion.p
           className="section-lead"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
+          transition={{ ...fadeUpTransition, delay: 0.1 }}
         >
           ProofPay is built on Stellar's Confidential Tokens -- a developer preview, not a
           finished, audited product. Here's exactly what that means, what's actually private,
@@ -78,7 +73,7 @@ export default function About() {
           className="about-visual"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          transition={{ ...fadeUpTransition, delay: 0.15 }}
         >
           <PrivateDataIllustration />
         </motion.div>
@@ -90,7 +85,7 @@ export default function About() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
+          transition={fadeUpTransition}
         >
           <h3>Honest disclosure: unaudited developer preview</h3>
           <p>
@@ -127,7 +122,7 @@ export default function About() {
             viewport={{ once: true, amount: 0.2 }}
             variants={stagger}
           >
-            <motion.div className="architecture-item" variants={fadeUp} transition={{ duration: 0.35 }}>
+            <motion.div className="architecture-item" variants={fadeUp} transition={fadeUpTransition}>
               <div className="architecture-item-icon">
                 <IconChip />
               </div>
@@ -142,7 +137,7 @@ export default function About() {
                 </p>
               </div>
             </motion.div>
-            <motion.div className="architecture-item" variants={fadeUp} transition={{ duration: 0.35 }}>
+            <motion.div className="architecture-item" variants={fadeUp} transition={fadeUpTransition}>
               <div className="architecture-item-icon">
                 <IconLock />
               </div>
@@ -158,7 +153,7 @@ export default function About() {
                 </p>
               </div>
             </motion.div>
-            <motion.div className="architecture-item" variants={fadeUp} transition={{ duration: 0.35 }}>
+            <motion.div className="architecture-item" variants={fadeUp} transition={fadeUpTransition}>
               <div className="architecture-item-icon">
                 <IconShield />
               </div>
@@ -191,7 +186,7 @@ export default function About() {
             viewport={{ once: true, amount: 0.3 }}
             variants={stagger}
           >
-            <motion.div className="usecase-card" variants={fadeUp} transition={{ duration: 0.35 }}>
+            <motion.div className="usecase-card" variants={fadeUp} transition={fadeUpTransition}>
               <div className="usecase-card-icon">
                 <IconHome />
               </div>
@@ -202,7 +197,7 @@ export default function About() {
                 handing over a full financial history.
               </p>
             </motion.div>
-            <motion.div className="usecase-card" variants={fadeUp} transition={{ duration: 0.35 }}>
+            <motion.div className="usecase-card" variants={fadeUp} transition={fadeUpTransition}>
               <div className="usecase-card-icon">
                 <IconBank />
               </div>
@@ -212,7 +207,7 @@ export default function About() {
                 process. A threshold proof lets an applicant clear that first bar privately.
               </p>
             </motion.div>
-            <motion.div className="usecase-card" variants={fadeUp} transition={{ duration: 0.35 }}>
+            <motion.div className="usecase-card" variants={fadeUp} transition={fadeUpTransition}>
               <div className="usecase-card-icon">
                 <IconBriefcase />
               </div>

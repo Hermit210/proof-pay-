@@ -6,13 +6,7 @@ import { Register } from "../features/register/Register";
 import { Deposit } from "../features/deposit/Deposit";
 import { ProveThreshold } from "../features/prove-threshold/ProveThreshold";
 import type { AppEnv } from "../services/env";
-
-const cardMotion = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-  transition: { duration: 0.35, ease: "easeOut" as const },
-};
+import { cardMotion } from "../lib/motionPresets";
 
 export default function Dashboard({ env }: { env: AppEnv }) {
   const { status, address, error, freighterAvailable, connect, disconnect } = useWalletContext();

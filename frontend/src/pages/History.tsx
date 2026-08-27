@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useWalletContext } from "../context/WalletContext";
 import { loadHistory, type HistoryEntry, type HistoryKind } from "../services/history";
 import { NoDataIllustration } from "../assets/illustrations";
+import { fadeUp, staggerContainer, fadeUpTransition } from "../lib/motionPresets";
 
 const EXPLORER_TX_URL = (hash: string) => `https://stellar.expert/explorer/testnet/tx/${hash}`;
 
@@ -67,9 +68,6 @@ function titleFor(entry: HistoryEntry): string {
       return `Proof rejected -- balance below ${entry.threshold ?? "?"}`;
   }
 }
-
-const staggerContainer = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
-const fadeUp = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
 
 export default function History() {
   const { address } = useWalletContext();
@@ -144,13 +142,19 @@ export default function History() {
             {filtered.length === 0 ? (
               <p className="empty-state">No entries match this filter.</p>
             ) : (
-              <motion.div className="history-list" initial="hidden" animate="show" variants={staggerContainer}>
+              <motion.div
+                className="history-list"
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.2 }}
+                variants={staggerContainer}
+              >
                 {filtered.map((entry) => (
                   <motion.div
                     className="history-item"
                     key={entry.id}
                     variants={fadeUp}
-                    transition={{ duration: 0.3 }}
+                    transition={fadeUpTransition}
                   >
                     <div className="history-item-left">
                       <span className="history-item-icon">{ICONS[entry.kind]}</span>
