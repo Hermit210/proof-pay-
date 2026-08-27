@@ -49,10 +49,13 @@
   --space-4: 1rem;
   --space-5: 1.25rem;
   --space-6: 1.5rem;
+  --space-7: 1.75rem;
   --space-8: 2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
+  --space-14: 3.5rem;
   --space-16: 4rem;
+  --space-20: 5rem;
 
   /* ---- Shadow scale: one subtle elevation, one slightly stronger one for
      the device-frame mockup (the only element meant to look "lifted off
@@ -149,13 +152,13 @@ textarea:focus-visible {
 .page {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 var(--space-5);
 }
 
 .page-narrow {
   max-width: 640px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: var(--space-6) var(--space-4) var(--space-12);
 }
 
 /* ---------- Navbar ---------- */
@@ -167,7 +170,7 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.15rem 2rem;
+  padding: var(--space-5) var(--space-8);
   background: color-mix(in srgb, var(--white) 88%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
@@ -176,7 +179,7 @@ textarea:focus-visible {
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   font-weight: 700;
   font-size: var(--text-md);
   color: var(--text);
@@ -191,19 +194,19 @@ textarea:focus-visible {
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: var(--space-8);
 }
 
 .navbar-links {
   display: flex;
-  gap: 1.25rem;
+  gap: var(--space-5);
 }
 
 .navbar-links a {
   color: var(--text-dim);
   text-decoration: none;
   font-size: 0.92rem;
-  padding: 0.3rem 0;
+  padding: var(--space-1) 0;
   border-bottom: 2px solid transparent;
   transition: color 0.15s ease;
 }
@@ -223,15 +226,15 @@ textarea:focus-visible {
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  padding: 0.4rem 0.6rem;
+  padding: var(--space-2) var(--space-2);
   cursor: pointer;
 }
 
 .navbar-mobile-menu {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.75rem 1.25rem 1rem;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-5) var(--space-4);
   border-bottom: 1px solid var(--border);
   background: var(--bg);
 }
@@ -239,7 +242,7 @@ textarea:focus-visible {
 .navbar-mobile-menu a {
   color: var(--text-dim);
   text-decoration: none;
-  padding: 0.6rem 0.25rem;
+  padding: var(--space-2) var(--space-1);
   font-size: 0.95rem;
 }
 
@@ -255,7 +258,7 @@ textarea:focus-visible {
     display: inline-flex;
   }
   .navbar-right {
-    gap: 0.75rem;
+    gap: var(--space-3);
   }
   .hide-on-mobile-nav {
     display: none;
@@ -266,13 +269,13 @@ textarea:focus-visible {
 
 .page-hero {
   text-align: center;
-  padding: 2.75rem 1.25rem 2.25rem;
+  padding: var(--space-10) var(--space-5) var(--space-8);
 }
 
 .page-hero h1 {
   font-size: var(--text-2xl);
   line-height: var(--leading-snug);
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
 }
 
 .page-hero .section-lead,
@@ -286,11 +289,11 @@ textarea:focus-visible {
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 1.25rem;
+  padding: var(--space-5);
 }
 
 .card h2 {
-  margin: 0 0 0.75rem;
+  margin: 0 0 var(--space-3);
   font-size: var(--text-md);
 }
 
@@ -300,7 +303,7 @@ textarea:focus-visible {
   font-weight: 700;
   border: none;
   border-radius: var(--radius-sm);
-  padding: 0.6rem 1.1rem;
+  padding: var(--space-2) var(--space-4);
   font-size: 0.95rem;
   cursor: pointer;
   white-space: nowrap;
@@ -343,7 +346,7 @@ textarea:focus-visible {
   color: var(--text-dim);
   border: 1px solid color-mix(in srgb, var(--ink) 22%, var(--white) 78%);
   border-radius: var(--radius-sm);
-  padding: 0.4rem 0.8rem;
+  padding: var(--space-2) var(--space-3);
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -355,10 +358,10 @@ textarea:focus-visible {
 
 .field-row {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   flex-wrap: wrap;
   align-items: center;
-  margin: 0.75rem 0;
+  margin: var(--space-3) 0;
 }
 
 .field-row input {
@@ -367,15 +370,15 @@ textarea:focus-visible {
   background: var(--bg);
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 0.6rem;
+  padding: var(--space-2);
   color: var(--text);
   font-size: 1rem;
 }
 
 .alert {
   border-radius: var(--radius-sm);
-  padding: 0.75rem 1rem;
-  margin-top: 0.75rem;
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-3);
   font-size: 0.9rem;
 }
 
@@ -400,10 +403,10 @@ textarea:focus-visible {
 .spinner-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--space-2);
   color: var(--text-dim);
   font-size: 0.9rem;
-  margin-top: 0.5rem;
+  margin-top: var(--space-2);
 }
 
 .spinner {
@@ -427,13 +430,13 @@ textarea:focus-visible {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .wallet-badge-row {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .wallet-badge {
@@ -441,7 +444,7 @@ textarea:focus-visible {
   color: var(--white);
   border: none;
   border-radius: 999px;
-  padding: 0.55rem 1rem;
+  padding: var(--space-2) var(--space-4);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -463,13 +466,13 @@ textarea:focus-visible {
 
 .wallet-menu-dropdown {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: calc(100% + var(--space-2));
   right: 0;
   background: var(--bg);
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  padding: 0.5rem;
+  padding: var(--space-2);
   min-width: 200px;
   z-index: 50;
 }
@@ -480,7 +483,7 @@ textarea:focus-visible {
   text-align: left;
   background: none;
   border: none;
-  padding: 0.55rem 0.6rem;
+  padding: var(--space-2) var(--space-2);
   border-radius: var(--radius-sm);
   color: var(--text);
   font-size: 0.88rem;
@@ -496,7 +499,7 @@ textarea:focus-visible {
 }
 
 .wallet-menu-hint {
-  padding: 0.5rem 0.6rem 0.3rem;
+  padding: var(--space-2) var(--space-2) var(--space-1);
   color: var(--text-dim);
   font-size: 0.78rem;
 }
@@ -508,8 +511,8 @@ textarea:focus-visible {
 
 .config-error {
   max-width: 480px;
-  margin: 3rem auto;
-  padding: 1.5rem;
+  margin: var(--space-12) auto;
+  padding: var(--space-6);
   background: var(--surface);
   border: 1px solid var(--error);
   border-radius: var(--radius-md);
@@ -517,7 +520,7 @@ textarea:focus-visible {
 
 .config-error code {
   background: var(--bg-elevated);
-  padding: 0.1rem 0.35rem;
+  padding: var(--space-1) var(--space-1);
   border-radius: var(--radius-sm);
 }
 
@@ -527,7 +530,7 @@ textarea:focus-visible {
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  padding: 0.5rem;
+  padding: var(--space-2);
   font-family: var(--font-mono);
   font-size: 0.8rem;
   resize: vertical;
@@ -542,35 +545,35 @@ textarea:focus-visible {
 .dashboard {
   max-width: 640px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: var(--space-6) var(--space-4) var(--space-12);
 }
 
 .dashboard-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-8);
 }
 
 .dashboard-header h1 {
-  margin: 0 0 0.25rem;
+  margin: 0 0 var(--space-1);
 }
 
 .tagline {
   color: var(--text-dim);
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-4);
   font-size: 0.95rem;
 }
 
 .dashboard-main {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--space-5);
 }
 
 .dashboard-progress {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
 }
 
 .dashboard-progress-dot {
@@ -588,7 +591,7 @@ textarea:focus-visible {
 
 .hero {
   position: relative;
-  padding: 5rem 0 4rem;
+  padding: var(--space-20) 0 var(--space-16);
   text-align: center;
   overflow: hidden;
 }
@@ -608,17 +611,17 @@ textarea:focus-visible {
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--space-2);
   background: var(--accent-wash);
   border: 1px solid color-mix(in srgb, var(--signal-green) 35%, transparent);
   color: var(--accent-bright);
   border-radius: 999px;
-  padding: 0.4rem 0.85rem;
+  padding: var(--space-2) var(--space-3);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
 }
 
 .hero-badge-dot {
@@ -632,7 +635,7 @@ textarea:focus-visible {
 .hero-trust {
   color: var(--text-dim);
   font-size: 0.82rem;
-  margin: 1.25rem 0 0;
+  margin: var(--space-5) 0 0;
 }
 
 .hero-content {
@@ -643,7 +646,7 @@ textarea:focus-visible {
 .hero h1,
 .about-hero h1 {
   font-size: var(--text-3xl);
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-4);
   line-height: var(--leading-tight);
 }
 
@@ -655,14 +658,14 @@ textarea:focus-visible {
   color: var(--text-dim);
   font-size: 1.15rem;
   max-width: 620px;
-  margin: 0 auto 2rem;
+  margin: 0 auto var(--space-8);
 }
 
 
 /* ---------- Feature strip (dividers, not cards) ---------- */
 
 .feature-strip-section {
-  padding: 3rem 0 2.5rem;
+  padding: var(--space-12) 0 var(--space-10);
 }
 
 .feature-strip {
@@ -674,8 +677,8 @@ textarea:focus-visible {
 .feature-strip-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.85rem;
-  padding: 0.5rem 1.75rem;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-7);
   border-left: 1px solid var(--border);
   max-width: 220px;
 }
@@ -687,11 +690,11 @@ textarea:focus-visible {
 .feature-strip-icon {
   color: var(--accent);
   flex-shrink: 0;
-  margin-top: 0.1rem;
+  margin-top: var(--space-1);
 }
 
 .feature-strip-item h3 {
-  margin: 0 0 0.3rem;
+  margin: 0 0 var(--space-1);
   font-size: var(--text-sm);
 }
 
@@ -708,7 +711,7 @@ textarea:focus-visible {
     border-top: 1px solid var(--border);
     max-width: none;
     width: 100%;
-    padding: 1rem 0.5rem;
+    padding: var(--space-4) var(--space-2);
   }
   .feature-strip-item:first-child {
     border-top: none;
@@ -718,7 +721,7 @@ textarea:focus-visible {
 /* ---------- Marquee (infinite scrolling capability ticker) ---------- */
 
 .marquee-section {
-  padding: 1.75rem 0;
+  padding: var(--space-7) 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
 }
@@ -742,8 +745,8 @@ textarea:focus-visible {
 
 .marquee-group {
   display: flex;
-  gap: 0.85rem;
-  padding-right: 0.85rem;
+  gap: var(--space-3);
+  padding-right: var(--space-3);
   flex-shrink: 0;
 }
 
@@ -759,12 +762,12 @@ textarea:focus-visible {
 .marquee-card {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--space-2);
   flex: 0 0 auto;
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: 999px;
-  padding: 0.6rem 1.2rem;
+  padding: var(--space-2) var(--space-5);
   color: var(--text);
   font-size: 0.88rem;
   font-weight: 600;
@@ -798,14 +801,14 @@ textarea:focus-visible {
 }
 
 .section {
-  padding: 3.5rem 0;
+  padding: var(--space-14) 0;
   border-top: 1px solid var(--border);
 }
 
 .section h2 {
   font-size: var(--text-2xl);
   line-height: var(--leading-snug);
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   text-align: center;
 }
 
@@ -813,14 +816,14 @@ textarea:focus-visible {
   color: var(--text-dim);
   text-align: center;
   max-width: 640px;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto var(--space-10);
 }
 
 .problem-grid,
 .usecase-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  gap: var(--space-5);
 }
 
 .problem-card,
@@ -828,18 +831,18 @@ textarea:focus-visible {
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: var(--space-6);
 }
 
 .problem-card-icon,
 .usecase-card-icon {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-3);
   color: var(--accent);
 }
 
 .problem-card h3,
 .usecase-card h3 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   font-size: var(--text-md);
   color: var(--accent-dim);
 }
@@ -855,7 +858,7 @@ textarea:focus-visible {
 .steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: var(--space-6);
   counter-reset: step;
   position: relative;
 }
@@ -865,7 +868,7 @@ textarea:focus-visible {
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 1.75rem 1.5rem;
+  padding: var(--space-7) var(--space-6);
 }
 
 .step-number {
@@ -878,16 +881,16 @@ textarea:focus-visible {
   background: var(--accent-wash);
   color: var(--accent);
   font-weight: 700;
-  margin-bottom: 0.9rem;
+  margin-bottom: var(--space-4);
 }
 
 .step-icon {
-  margin-bottom: 0.9rem;
+  margin-bottom: var(--space-4);
   color: var(--accent);
 }
 
 .step h3 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   font-size: var(--text-md);
 }
 
@@ -902,8 +905,8 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin: 0 auto 2.5rem;
+  gap: var(--space-2);
+  margin: 0 auto var(--space-10);
   flex-wrap: wrap;
 }
 
@@ -911,7 +914,7 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--space-2);
   color: var(--text-dim);
   font-size: 0.8rem;
   font-weight: 600;
@@ -929,7 +932,7 @@ textarea:focus-visible {
   background: linear-gradient(145deg, color-mix(in srgb, var(--gold-accent) 10%, transparent), var(--bg));
   border: 1px solid var(--gold-accent);
   border-radius: var(--radius-lg);
-  padding: 2rem;
+  padding: var(--space-8);
   text-align: center;
   max-width: 640px;
   margin: 0 auto;
@@ -940,33 +943,33 @@ textarea:focus-visible {
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
 }
 
 .proof-point-value {
   font-size: 2rem;
   font-weight: 700;
   color: var(--gold-accent);
-  margin: 0 0 0.75rem;
+  margin: 0 0 var(--space-3);
   font-family: var(--font-mono);
 }
 
 .proof-point p {
   color: var(--text-dim);
-  margin: 0 0 1rem;
+  margin: 0 0 var(--space-4);
   font-size: 0.95rem;
 }
 
 .cta-row {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 2.5rem;
+  gap: var(--space-4);
+  margin-top: var(--space-10);
 }
 
 .cta-row .btn,
 .cta-row .btn-outline {
-  padding: 0.85rem 1.75rem;
+  padding: var(--space-3) var(--space-7);
   font-size: 1rem;
 }
 
@@ -989,8 +992,8 @@ textarea:focus-visible {
 .browser-frame-header {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.65rem 0.9rem;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
   background: #e9e9ec;
   border-bottom: 1px solid var(--border);
 }
@@ -1031,13 +1034,13 @@ textarea:focus-visible {
 
 .about-hero {
   text-align: center;
-  padding: 3.5rem 0 1rem;
+  padding: var(--space-14) 0 var(--space-4);
 }
 
 .about-visual {
   color: var(--accent);
   max-width: 340px;
-  margin: 2rem auto 0;
+  margin: var(--space-8) auto 0;
 }
 
 .about-visual svg {
@@ -1048,15 +1051,15 @@ textarea:focus-visible {
 
 .disclosure-box {
   max-width: 760px;
-  margin: 2rem auto 0;
+  margin: var(--space-8) auto 0;
   background: color-mix(in srgb, var(--info) 6%, transparent);
   border: 1px solid var(--info);
   border-radius: var(--radius-md);
-  padding: 1.5rem;
+  padding: var(--space-6);
 }
 
 .disclosure-box h3 {
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   color: var(--info);
   font-size: 1rem;
 }
@@ -1064,7 +1067,7 @@ textarea:focus-visible {
 .disclosure-box p {
   color: var(--text-dim);
   font-size: 0.9rem;
-  margin: 0 0 0.5rem;
+  margin: 0 0 var(--space-2);
   line-height: 1.55;
 }
 
@@ -1077,16 +1080,16 @@ textarea:focus-visible {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .architecture-item {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 1.25rem 1.5rem;
+  padding: var(--space-5) var(--space-6);
 }
 
 .architecture-item-icon {
@@ -1095,7 +1098,7 @@ textarea:focus-visible {
 }
 
 .architecture-item h3 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 var(--space-1);
   font-size: 1rem;
 }
 
@@ -1111,24 +1114,24 @@ textarea:focus-visible {
 .history-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
 .history-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-4);
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 1rem 1.25rem;
+  padding: var(--space-4) var(--space-5);
 }
 
 .history-item-left {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: var(--space-3);
 }
 
 .history-item-icon {
@@ -1154,9 +1157,9 @@ textarea:focus-visible {
 
 .history-filters {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
   flex-wrap: wrap;
 }
 
@@ -1164,7 +1167,7 @@ textarea:focus-visible {
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: 999px;
-  padding: 0.4rem 0.9rem;
+  padding: var(--space-2) var(--space-4);
   font-size: 0.85rem;
   color: var(--text-dim);
   cursor: pointer;
@@ -1172,7 +1175,7 @@ textarea:focus-visible {
 
 .history-empty-illustration {
   max-width: 260px;
-  margin: 1.5rem auto;
+  margin: var(--space-6) auto;
   color: var(--accent);
 }
 
@@ -1195,7 +1198,7 @@ textarea:focus-visible {
     grid-template-columns: 1fr;
   }
   .hero {
-    padding: 3rem 0 2.5rem;
+    padding: var(--space-12) 0 var(--space-10);
   }
   .flow-diagram {
     flex-direction: column;
@@ -1210,7 +1213,7 @@ textarea:focus-visible {
 
 @media (max-width: 420px) {
   .dashboard {
-    padding: 1rem 0.75rem 2rem;
+    padding: var(--space-4) var(--space-3) var(--space-8);
   }
   .dashboard-header h1 {
     font-size: var(--text-xl);
@@ -1225,7 +1228,7 @@ textarea:focus-visible {
   .history-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.35rem;
+    gap: var(--space-1);
   }
   .cta-row {
     flex-direction: column;
