@@ -5,7 +5,7 @@
      .browser-frame (real macOS traffic-light colors, not a brand choice). ---- */
   --black: #0a0f0c; /* near-black, faintly green-tinted */
   --white: #fafaf9; /* off-white -- never pure #fff against pure ink, too harsh */
-  --signal-green: #16c464; /* primary accent: buttons, active states, success */
+  --signal-green: #12a955; /* primary accent: buttons, active states, success -- deepened from #16c464, less neon/saturated for a calmer, more confident feel */
   --deep-forest: #0f2e1f; /* secondary dark green: AA-safe text-green on light bg, depth/borders on dark bg */
   --gold-accent: #c9a24b; /* rare, premium/verified moments ONLY -- scarcity is the point */
   --ink: #141414; /* primary text */
