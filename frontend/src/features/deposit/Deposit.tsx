@@ -6,13 +6,14 @@ import type { AppEnv } from "../../services/env";
 const STAGE_LABEL: Record<string, string> = {
   depositing: "Depositing...",
   merging: "Merging into your spendable balance...",
+  confirming: "Confirming on-chain...",
 };
 
 export function Deposit({ env, address }: { env: AppEnv; address: string }) {
   const { stage, error, deposit } = useDeposit(env, address);
   const [amount, setAmount] = useState("");
 
-  const busy = stage === "depositing" || stage === "merging";
+  const busy = stage === "depositing" || stage === "merging" || stage === "confirming";
 
   return (
     <Card title="Receive income">

@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Buffer } from "buffer";
 import { makeTokenClient, makeThresholdVerifierClient } from "../../services/contracts/clients";
+import { confirmTransactionOnChain } from "../../services/contracts/confirmTransaction";
 import { decodeConfidentialAccount } from "../../services/contracts/decodeAccount";
 import { addressToFieldHex } from "../../services/crypto/addressToField";
 import { generateProof, CIRCUITS } from "../../services/proof/noirProver";
@@ -15,6 +16,7 @@ export type ProveStage =
   | "reading_balance"
   | "generating_proof"
   | "verifying"
+  | "confirming"
   | "passed"
   | "failed_below_threshold"
   | "error";
@@ -102,8 +104,17 @@ export function useProveThreshold(env: AppEnv, address: string | null) {
         // `force: true` is the SDK's own documented mechanism for that,
         // confirmed by reading its source rather than guessed.
         const sent = await verifyTx.signAndSend({ force: true });
-        const passed = verifyTx.result.isOk() && verifyTx.result.unwrap();
         const provedTxHash = sent.sendTransactionResponse?.hash ?? null;
+
+        // Same discipline as register/deposit: never treat signAndSend()
+        // resolving as proof of on-chain state (see
+        // docs/research/step3c-register-false-success.md). Only trust
+        // `verifyTx.result` once the submitted transaction is independently
+        // confirmed SUCCESS via a direct RPC re-read.
+        setState((s) => ({ ...s, stage: "confirming" }));
+        if (provedTxHash) await confirmTransactionOnChain(env, provedTxHash);
+
+        const passed = verifyTx.result.isOk() && verifyTx.result.unwrap();
 
         setState({
           stage: passed ? "passed" : "failed_below_threshold",

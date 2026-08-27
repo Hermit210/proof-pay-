@@ -8,13 +8,18 @@ const STAGE_LABEL: Record<string, string> = {
   reading_balance: "Reading your on-chain balance...",
   generating_proof: "Generating proof locally -- this takes a few seconds and never leaves your browser...",
   verifying: "Verifying on-chain...",
+  confirming: "Confirming on-chain...",
 };
 
 export function ProveThreshold({ env, address }: { env: AppEnv; address: string }) {
   const { stage, error, txHash, threshold, prove } = useProveThreshold(env, address);
   const [input, setInput] = useState("");
 
-  const busy = stage === "reading_balance" || stage === "generating_proof" || stage === "verifying";
+  const busy =
+    stage === "reading_balance" ||
+    stage === "generating_proof" ||
+    stage === "verifying" ||
+    stage === "confirming";
 
   return (
     <Card title="Prove your income">
