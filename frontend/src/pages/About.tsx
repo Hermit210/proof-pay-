@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { PrivateDataIllustration } from "../assets/illustrations";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -72,6 +73,15 @@ export default function About() {
           finished, audited product. Here's exactly what that means, what's actually private,
           and where the real risk sits.
         </motion.p>
+
+        <motion.div
+          className="about-visual"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+        >
+          <PrivateDataIllustration />
+        </motion.div>
 
         <motion.div
           className="disclosure-box"
