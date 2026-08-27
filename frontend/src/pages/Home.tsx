@@ -1,7 +1,6 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import type { AppEnv } from "../services/env";
-import { SecurityOnIllustration } from "../assets/illustrations";
 import { Marquee } from "../components/Marquee";
 
 // Real, already-verified testnet transaction -- not a placeholder number.
@@ -190,9 +189,6 @@ export default function Home({ env: _env }: { env: AppEnv }) {
           <motion.p className="hero-subtitle" variants={fadeUp} transition={{ duration: 0.5 }}>
             A real zero-knowledge proof, generated in your browser, verified on Stellar.
           </motion.p>
-          <motion.div className="hero-visual" variants={fadeUp} transition={{ duration: 0.6 }}>
-            <SecurityOnIllustration />
-          </motion.div>
           <motion.div className="cta-row" variants={fadeUp} transition={{ duration: 0.5 }}>
             <Link to="/dashboard" className="btn">
               Try it on testnet
