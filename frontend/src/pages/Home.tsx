@@ -169,7 +169,7 @@ const CAPABILITIES = [
 export default function Home({ env: _env }: { env: AppEnv }) {
   return (
     <div>
-      <section className="hero">
+      <section className="hero section-invert">
         <div className="hero-aurora" aria-hidden="true" />
         <motion.div
           className="hero-content page"
