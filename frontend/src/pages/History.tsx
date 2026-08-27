@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { useWalletContext } from "../context/WalletContext";
@@ -75,7 +75,28 @@ export default function History() {
   const { address } = useWalletContext();
   const [filter, setFilter] = useState<"all" | HistoryKind>("all");
 
-  const entries = useMemo(() => (address ? loadHistory(address) : []), [address]);
+  const [entries, setEntries] = useState<HistoryEntry[]>([]);
+
+  const refresh = useCallback(() => {
+    setEntries(address ? loadHistory(address) : []);
+  }, [address]);
+
+  // A fresh route mount already re-reads localStorage (loadHistory isn't
+  // cached across navigations), which covers the common case: do an action
+  // on Dashboard, then navigate to History. This closes the one real gap --
+  // History already open in a background tab/window while an action happens
+  // elsewhere -- by re-reading when the tab regains focus or visibility,
+  // rather than requiring a manual page refresh.
+  useEffect(() => {
+    refresh();
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [refresh]);
+
   const filtered = filter === "all" ? entries : entries.filter((e) => e.kind === filter);
 
   return (
