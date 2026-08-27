@@ -59,7 +59,7 @@ function IconBriefcase() {
 export default function About() {
   return (
     <div>
-      <section className="about-hero page">
+      <section className="about-hero page section-invert">
         <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           Why Stellar, and how the privacy actually works
         </motion.h1>
@@ -82,7 +82,9 @@ export default function About() {
         >
           <PrivateDataIllustration />
         </motion.div>
+      </section>
 
+      <section className="section">
         <motion.div
           className="disclosure-box"
           initial={{ opacity: 0, y: 16 }}
