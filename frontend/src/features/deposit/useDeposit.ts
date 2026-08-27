@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { makeTokenClient } from "../../services/contracts/clients";
 import { recordDeposit } from "../../services/localWalletState";
+import { appendHistory } from "../../services/history";
 import { track, reportError } from "../../services/analytics";
 import type { AppEnv } from "../../services/env";
 
@@ -23,7 +24,7 @@ export function useDeposit(env: AppEnv, address: string | null) {
         setStage("depositing");
         const client = makeTokenClient(env, address);
         const depositTx = await client.deposit({ from: address, to: address, amount: amountNum });
-        await depositTx.signAndSend();
+        const sentDeposit = await depositTx.signAndSend();
         track("deposit_made", { amount: amount.toString() });
 
         setStage("merging");
@@ -31,6 +32,11 @@ export function useDeposit(env: AppEnv, address: string | null) {
         await mergeTx.signAndSend();
 
         recordDeposit(address, amountNum);
+        appendHistory(address, {
+          kind: "deposit",
+          txHash: sentDeposit.sendTransactionResponse?.hash ?? null,
+          amount: amountNum.toString(),
+        });
         setStage("done");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Deposit failed.";

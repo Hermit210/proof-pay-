@@ -5,6 +5,7 @@ import { decodeConfidentialAccount } from "../../services/contracts/decodeAccoun
 import { addressToFieldHex } from "../../services/crypto/addressToField";
 import { generateProof, CIRCUITS } from "../../services/proof/noirProver";
 import { loadWalletState } from "../../services/localWalletState";
+import { appendHistory } from "../../services/history";
 import { track, reportError } from "../../services/analytics";
 import type { AppEnv } from "../../services/env";
 
@@ -97,11 +98,17 @@ export function useProveThreshold(env: AppEnv, address: string | null) {
         // confirmed by reading its source rather than guessed.
         const sent = await verifyTx.signAndSend({ force: true });
         const passed = verifyTx.result.isOk() && verifyTx.result.unwrap();
+        const provedTxHash = sent.sendTransactionResponse?.hash ?? null;
 
         setState({
           stage: passed ? "passed" : "failed_below_threshold",
           error: null,
-          txHash: sent.sendTransactionResponse?.hash ?? null,
+          txHash: provedTxHash,
+          threshold: thresholdInput,
+        });
+        appendHistory(address, {
+          kind: passed ? "prove_passed" : "prove_failed",
+          txHash: provedTxHash,
           threshold: thresholdInput,
         });
         track(passed ? "proof_verified" : "proof_verification_failed", { threshold: thresholdInput });

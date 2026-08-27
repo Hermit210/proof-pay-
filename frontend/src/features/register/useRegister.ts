@@ -5,6 +5,7 @@ import { addressToFieldHex } from "../../services/crypto/addressToField";
 import { executeCircuit, generateProof, CIRCUITS } from "../../services/proof/noirProver";
 import { buildRegisterData } from "../../services/proof/registerPayload";
 import { saveWalletState, loadWalletState, type LocalWalletState } from "../../services/localWalletState";
+import { appendHistory } from "../../services/history";
 import { track, reportError } from "../../services/analytics";
 import type { AppEnv } from "../../services/env";
 
@@ -145,6 +146,7 @@ export function useRegister(env: AppEnv, address: string | null) {
         registered: true,
       };
       saveWalletState(state);
+      appendHistory(address, { kind: "register", txHash: submittedHash ?? null });
 
       setIsRegistered(true);
       setStage("done");
