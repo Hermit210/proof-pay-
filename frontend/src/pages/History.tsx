@@ -78,77 +78,85 @@ export default function History() {
   const entries = useMemo(() => (address ? loadHistory(address) : []), [address]);
   const filtered = filter === "all" ? entries : entries.filter((e) => e.kind === filter);
 
-  if (!address) {
-    return (
-      <div className="page-narrow" style={{ textAlign: "center", paddingTop: "3rem" }}>
-        <h1>History</h1>
-        <p className="empty-state">Connect your wallet to see your real register, deposit, and proof activity.</p>
-        <Link to="/dashboard" className="btn" style={{ marginTop: "1rem", display: "inline-block" }}>
-          Go to dashboard
-        </Link>
-      </div>
-    );
-  }
-
-  if (entries.length === 0) {
-    return (
-      <div className="page-narrow" style={{ textAlign: "center", paddingTop: "2rem" }}>
-        <h1>History</h1>
-        <div className="history-empty-illustration">
-          <NoDataIllustration />
-        </div>
-        <p className="empty-state">
-          Nothing here yet. Register, deposit, and generate a proof on the dashboard -- every real
-          action shows up here with its actual transaction hash.
-        </p>
-        <Link to="/dashboard" className="btn" style={{ marginTop: "1rem", display: "inline-block" }}>
-          Go to dashboard
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div className="page-narrow">
-      <h1 style={{ textAlign: "center" }}>History</h1>
-      <p className="section-lead">Every real action this browser has taken, most recent first.</p>
+    <div>
+      <section className="page-hero section-invert">
+        <h1>History</h1>
+        <p className="section-lead">Every real action this browser has taken, most recent first.</p>
+      </section>
 
-      <div className="history-filters">
-        {FILTERS.map((f) => (
-          <button
-            key={f.id}
-            className={`history-filter ${filter === f.id ? "active" : ""}`}
-            onClick={() => setFilter(f.id)}
-          >
-            {f.label}
-          </button>
-        ))}
+      <div className="page-narrow">
+        {!address ? (
+          <div style={{ textAlign: "center", paddingTop: "1rem" }}>
+            <p className="empty-state">Connect your wallet to see your real register, deposit, and proof activity.</p>
+            <Link to="/dashboard" className="btn" style={{ marginTop: "1rem", display: "inline-block" }}>
+              Go to dashboard
+            </Link>
+          </div>
+        ) : entries.length === 0 ? (
+          <div style={{ textAlign: "center", paddingTop: "0.5rem" }}>
+            <div className="history-empty-illustration">
+              <NoDataIllustration />
+            </div>
+            <p className="empty-state">
+              Nothing here yet. Register, deposit, and generate a proof on the dashboard -- every
+              real action shows up here with its actual transaction hash.
+            </p>
+            <Link to="/dashboard" className="btn" style={{ marginTop: "1rem", display: "inline-block" }}>
+              Go to dashboard
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="history-filters">
+              {FILTERS.map((f) => (
+                <button
+                  key={f.id}
+                  className={`history-filter ${filter === f.id ? "active" : ""}`}
+                  onClick={() => setFilter(f.id)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+
+            {filtered.length === 0 ? (
+              <p className="empty-state">No entries match this filter.</p>
+            ) : (
+              <motion.div className="history-list" initial="hidden" animate="show" variants={staggerContainer}>
+                {filtered.map((entry) => (
+                  <motion.div
+                    className="history-item"
+                    key={entry.id}
+                    variants={fadeUp}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="history-item-left">
+                      <span className="history-item-icon">{ICONS[entry.kind]}</span>
+                      <div>
+                        <div className="history-item-kind">{titleFor(entry)}</div>
+                        <div className="history-item-meta">{new Date(entry.timestamp).toLocaleString()}</div>
+                      </div>
+                    </div>
+                    {entry.txHash ? (
+                      <a
+                        href={EXPLORER_TX_URL(entry.txHash)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn btn-outline"
+                      >
+                        View on Stellar Expert
+                      </a>
+                    ) : (
+                      <span className="history-item-meta">Confirmed on-chain</span>
+                    )}
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </>
+        )}
       </div>
-
-      {filtered.length === 0 ? (
-        <p className="empty-state">No entries match this filter.</p>
-      ) : (
-        <motion.div className="history-list" initial="hidden" animate="show" variants={staggerContainer}>
-          {filtered.map((entry) => (
-            <motion.div className="history-item" key={entry.id} variants={fadeUp} transition={{ duration: 0.3 }}>
-              <div className="history-item-left">
-                <span className="history-item-icon">{ICONS[entry.kind]}</span>
-                <div>
-                  <div className="history-item-kind">{titleFor(entry)}</div>
-                  <div className="history-item-meta">{new Date(entry.timestamp).toLocaleString()}</div>
-                </div>
-              </div>
-              {entry.txHash ? (
-                <a href={EXPLORER_TX_URL(entry.txHash)} target="_blank" rel="noreferrer" className="btn btn-outline">
-                  View on Stellar Expert
-                </a>
-              ) : (
-                <span className="history-item-meta">Confirmed on-chain</span>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
     </div>
   );
 }

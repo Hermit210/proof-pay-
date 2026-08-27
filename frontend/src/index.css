@@ -187,6 +187,22 @@ code {
   }
 }
 
+/* ---------- Slim dark title band (History, Dashboard) ---------- */
+
+.page-hero {
+  text-align: center;
+  padding: 2.75rem 1.25rem 2.25rem;
+}
+
+.page-hero h1 {
+  margin: 0 0 0.5rem;
+}
+
+.page-hero .section-lead,
+.page-hero .tagline {
+  margin: 0 auto;
+}
+
 /* ---------- Shared card/button/alert primitives (used by Dashboard) ---------- */
 
 .card {
